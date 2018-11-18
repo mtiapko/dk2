@@ -6,7 +6,7 @@ CC_INCLUDES := -I./include
 CC_DEFINES :=
 
 LD_FLAGS :=
-LD_LIBS :=
+LD_LIBS := -lEGL
 
 SRC_DIR := src src/graphic
 OBJ_DIR := obj

@@ -7,7 +7,8 @@
 #define DK_LOG_HEADER(title) "[" title "] " __FILE__ "::", __func__, " (", __LINE__, ") - "
 #define DK_LOG_PRINT(title, ...) dk::log::print(DK_LOG_HEADER(title), __VA_ARGS__)
 
-#define DK_LOG(...)     DK_LOG_PRINT("  MSG  ", __VA_ARGS__, '\n');
+#define DK_LOG(...)         DK_LOG_PRINT("  MSG  ", __VA_ARGS__, '\n');
+#define DK_LOG_OK(...)      DK_LOG_PRINT("  OK!  ", __VA_ARGS__, '\n');
 #define DK_LOG_WARNING(...) DK_LOG_PRINT("WARNING", __VA_ARGS__, '\n');
 #define DK_LOG_ERROR(...)   DK_LOG_PRINT(" ERROR ", __VA_ARGS__, '\n');
 

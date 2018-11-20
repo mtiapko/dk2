@@ -10,11 +10,14 @@ namespace dk
 class render_system
 {
 private:
-	EGLDisplay m_display;
-	EGLConfig  m_config;
+	Display*   m_display;
+	EGLDisplay m_egl_display;
 
 public:
 	render_system();
+
+	Display* get_display() { return m_display; }
+	EGLDisplay get_egl_display() { return m_egl_display; }
 
 	ret_code create();
 };

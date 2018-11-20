@@ -1,11 +1,16 @@
 #include "log.h"
 #include "core.h"
+#include "graphic/render_window.h"
 
 int main()
 {
-	dk::render_system render_sys;
-	if (render_sys.create() != dk::ret_code::OK)
+	if (dk::core::create() != dk::ret_code::OK)
 		return -1;
 
+	dk::render_window wnd;
+	if (wnd.create() != dk::ret_code::OK)
+		return -1;
+
+	std::cin.get();
 	return 0;
 }

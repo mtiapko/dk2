@@ -2,7 +2,7 @@
 #define __DK_CORE_H__
 
 #include <type_traits>
-#include "graphic/render_system.h"
+#include "ret_code.h"
 
 namespace dk
 {
@@ -10,12 +10,15 @@ namespace dk
 class core
 {
 private:
-	static inline render_system s_active_render_sys;
+	static bool                s_running;
+	static class render_system s_active_render_sys;
+	static class application*  s_app;
 
 public:
-	static ret_code create() { return s_active_render_sys.create(); }
+	static ret_code run();
+	static ret_code create(class application* app);
 
-	static render_system* get_render_sys() { return &s_active_render_sys; }
+	static class render_system* get_render_sys() { return &s_active_render_sys; }
 };
 
 }

@@ -1,39 +1,36 @@
-#include "log.h"
+#include <GL/glew.h>
 #include "graphic/render_system.h"
+#include "log.h"
 
 namespace dk
 {
 
-render_system::render_system()
-	: m_display(nullptr)
-	, m_egl_display(nullptr)
-{}
+bool render_system::s_is_init;
+
+render_window* render_system::create_window()
+{
+	auto& render_window = m_windows.emplace_back();
+	return &render_window;
+}
+
+ret_code render_system::init()
+{
+	if (!s_is_init) {
+		auto err = glewInit();
+		if (err != GLEW_NO_ERROR) {
+			DK_LOG_ERROR("Failed to initialize GLEW: ", glewGetErrorString(err), ". Note: use 'glew-wayland' from aur");
+			//return ret_code::ERORR;  //  TODO: user glew-wayland
+		}
+
+		s_is_init = true;
+		DK_LOG_OK("GLEW ", glewGetString(GLEW_VERSION), " initialized");
+	}
+
+	return ret_code::OK;
+}
 
 ret_code render_system::create()
 {
-	if (m_display != nullptr)
-		return ret_code::OK;
-
-	m_display = XOpenDisplay(nullptr);
-	if (m_display == nullptr) {
-		DK_LOG_ERROR("Failed to open display connection");
-		return ret_code::ERORR;
-	}
-
-	m_egl_display = eglGetDisplay(m_display);
-	if (m_egl_display == nullptr) {
-		DK_LOG_ERROR("Failed to get EGL display");
-		return ret_code::ERORR;
-	}
-
-	EGLint egl_major_ver;
-	EGLint egl_minor_ver;
-	if (eglInitialize(m_egl_display, &egl_major_ver, &egl_minor_ver) != EGL_TRUE) {
-		DK_LOG_ERROR("Failed to initialize EGL");
-		return ret_code::ERORR;
-	}
-
-	DK_LOG_OK("EGL v", egl_major_ver, '.', egl_minor_ver, " successfully initialized");
 	return ret_code::OK;
 }
 

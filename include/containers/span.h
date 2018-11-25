@@ -5,7 +5,7 @@
 #include <iterator>
 #include <cstddef>
 
-namespace lao
+namespace dk
 {
 
 inline constexpr std::ptrdiff_t dynamic_extent = -1;

@@ -3,7 +3,7 @@
 
 #include <stack>
 
-namespace lao
+namespace dk
 {
 
 template<typename T>

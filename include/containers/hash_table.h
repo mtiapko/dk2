@@ -3,7 +3,7 @@
 
 #include <unordered_map>
 
-namespace lao
+namespace dk
 {
 
 template<typename KeyT, typename ValT>

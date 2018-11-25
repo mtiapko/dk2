@@ -1,12 +1,12 @@
 CC := g++
 LD := g++
 
-CC_FLAGS := -std=c++2a -MMD -MP
+CC_FLAGS := -std=c++2a -MMD -MP -g
 CC_INCLUDES := -I./include
 CC_DEFINES :=
 
 LD_FLAGS :=
-LD_LIBS := -lEGL -lX11
+LD_LIBS := -lEGL -lX11 -lGLEW -lGL
 
 SRC_DIR := src src/graphic
 OBJ_DIR := obj

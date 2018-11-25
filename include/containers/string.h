@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace lao
+namespace dk
 {
 
 using string = std::string;

@@ -1,29 +1,55 @@
 #ifndef __DK_LOG_H__
 #define __DK_LOG_H__
 
+#include <chrono>
+#include <iomanip>
 #include <iostream>
+#include "ret_code.h"
 #include "term.h"
 
-#define DK_LOG_HEADER(title) "[" title "] " __FILE__ "::", __func__, " (", __LINE__, ") - "
-#define DK_LOG_PRINT(title, ...) dk::log::print(DK_LOG_HEADER(title), __VA_ARGS__)
+#define DK_LOG_HEADER(title, file, func, line) "[" title "] ", dk::log_timestamp{}, " - ", file, "::", func, " (", line, ") - "
+#define DK_LOG_PRINT(title, file, func, line, ...) dk::log::print(DK_LOG_HEADER(title, file, func, line), __VA_ARGS__)
 
-#define DK_LOG(...)         DK_LOG_PRINT("  MSG  ", __VA_ARGS__, '\n');
-#define DK_LOG_OK(...)      DK_LOG_PRINT("  OK!  ", __VA_ARGS__, '\n');
-#define DK_LOG_WARNING(...) DK_LOG_PRINT("WARNING", __VA_ARGS__, '\n');
-#define DK_LOG_ERROR(...)   DK_LOG_PRINT(" ERROR ", __VA_ARGS__, '\n');
+#define DK_LOG_IMPL(file, func, line, ...)         DK_LOG_PRINT("  MSG  ", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_OK_IMPL(file, func, line, ...)      DK_LOG_PRINT("  OK!  ", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_WARNING_IMPL(file, func, line, ...) DK_LOG_PRINT("WARNING", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_ERROR_IMPL(file, func, line, ...)   DK_LOG_PRINT(" ERROR ", file, func, line, __VA_ARGS__, '\n')
+
+#define DK_LOG(...)         DK_LOG_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define DK_LOG_OK(...)      DK_LOG_OK_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define DK_LOG_WARNING(...) DK_LOG_WARNING_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define DK_LOG_ERROR(...)   DK_LOG_ERROR_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)
 
 namespace dk
 {
 
+struct log_timestamp {};
+
 class log
 {
+private:
+	static inline std::chrono::steady_clock::time_point s_start;
+
 public:
-	template<typename T> log operator<<(const T& t) { std::clog << t; return {}; }
-	log operator<<(term_text_attrib attrib) { term::set(attrib); return {}; }
-	log operator<<(term_text_color color) { term::set(color); return {}; }
-	log operator<<(term_back_color color) { term::set(color); return {}; }
+	template<typename T> log operator<<(const T& t) const { std::clog << t; return {}; }
+	log operator<<(term_text_attrib attrib) const { term::set(attrib); return {}; }
+	log operator<<(term_text_color color) const { term::set(color); return {}; }
+	log operator<<(term_back_color color) const { term::set(color); return {}; }
+
+	log operator<<(log_timestamp) const {
+		auto now = std::chrono::steady_clock::now();
+		auto dur = std::chrono::duration_cast<std::chrono::microseconds>(now - s_start).count();
+		std::clog << dur / 1000.0f << " ms";
+		return {};
+	}
 
 	template<typename... Args> static void print(const Args&... args) { (log{} << ... << args); }
+
+	static ret_code create()
+	{
+		s_start = std::chrono::steady_clock::now();
+		return ret_code::OK;
+	}
 };
 
 }

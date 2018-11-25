@@ -1,8 +1,10 @@
 #ifndef __DK_RENDER_SYSTEM_H__
 #define __DK_RENDER_SYSTEM_H__
 
-#include <EGL/egl.h>
-#include "ret_code.h"
+#include "graphic/shader.h"
+#include "graphic/shader_program.h"
+#include "graphic/render_window.h"
+#include "containers/vector.h"
 
 namespace dk
 {
@@ -10,15 +12,17 @@ namespace dk
 class render_system
 {
 private:
-	Display*   m_display;
-	EGLDisplay m_egl_display;
+	static bool s_is_init;
+
+	vector<render_window> m_windows;
+	vector<shader> m_sahders;
 
 public:
-	render_system();
+	render_window* create_window();
 
-	Display* get_display() { return m_display; }
-	EGLDisplay get_egl_display() { return m_egl_display; }
+	bool is_init() const { return s_is_init; }
 
+	ret_code init();
 	ret_code create();
 };
 

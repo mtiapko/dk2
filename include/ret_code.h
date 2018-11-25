@@ -8,7 +8,7 @@ enum class ret_code
 {
 	OK = 0,
 	WARNING,
-	ERORR,
+	ERROR,
 	FATAL
 };
 

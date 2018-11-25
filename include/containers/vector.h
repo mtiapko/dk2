@@ -3,7 +3,7 @@
 
 #include <vector>
 
-namespace lao
+namespace dk
 {
 
 template<typename T>

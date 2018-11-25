@@ -8,7 +8,7 @@ CC_DEFINES :=
 LD_FLAGS :=
 LD_LIBS := -lEGL -lX11 -lGLEW -lGL
 
-SRC_DIR := src src/graphic
+SRC_DIR := src src/graphic src/math
 OBJ_DIR := obj
 
 SRC := $(wildcard $(addsuffix /*.cpp, $(SRC_DIR)))
@@ -33,5 +33,8 @@ run: all
 clean:
 	@rm -rf $(OBJ_DIR)
 	@rm -f $(OUT)
+
+memcheck: all
+	@valgrind --leak-check=full --show-leak-kinds=all $(OUT)
 
 -include $(OBJ:.o=.d)

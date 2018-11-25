@@ -2,7 +2,7 @@
 #define __DK_RENDER_WINDOW_H__
 
 #include <EGL/egl.h>
-#include "ret_code.h"
+#include "status.h"
 
 namespace dk
 {
@@ -20,7 +20,7 @@ private:
 public:
 	void render() const { eglSwapBuffers(m_egl_display, m_surface); }
 
-	ret_code create();
+	status create();
 };
 
 }

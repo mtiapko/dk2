@@ -2,7 +2,7 @@
 #define __DK_CORE_H__
 
 #include <type_traits>
-#include "ret_code.h"
+#include "status.h"
 
 namespace dk
 {
@@ -15,8 +15,8 @@ private:
 	static class application*  s_app;
 
 public:
-	static ret_code run();
-	static ret_code create(class application* app);
+	static status run();
+	static status create(class application* app);
 
 	static class render_system* get_render_sys() { return &s_active_render_sys; }
 };

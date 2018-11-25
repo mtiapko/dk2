@@ -1,7 +1,6 @@
 #ifndef __DK_RENDER_SYSTEM_H__
 #define __DK_RENDER_SYSTEM_H__
 
-#include "graphic/shader.h"
 #include "graphic/shader_program.h"
 #include "graphic/render_window.h"
 #include "containers/vector.h"
@@ -22,8 +21,8 @@ public:
 
 	bool is_init() const { return s_is_init; }
 
-	ret_code init();
-	ret_code create();
+	status init();
+	status create();
 };
 
 }

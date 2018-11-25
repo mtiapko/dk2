@@ -1,6 +1,5 @@
-#include <GL/glew.h>
 #include "assert.h"
-#include "graphic/gl_call.h"
+#include "graphic/gl.h"
 #include "graphic/shader_program.h"
 
 namespace dk
@@ -16,20 +15,29 @@ void shader_program::disable() const
 	GL_CALL(glUseProgram(0));
 }
 
-ret_code shader_program::add_shader(const shader& shader) const
+GLint shader_program::get_uniform_location(string_view name)
+{
+	GLint location = glGetUniformLocation(m_shader_program, name.data());
+	if (location == -1)
+		DK_LOG_ERROR("Uniform '", name, "' does not exist in the shader program");
+
+	return location;
+}
+
+status shader_program::add_shader(const shader& shader) const
 {
 	DK_ASSERT(m_shader_program != 0);
 	GL_CALL(glAttachShader(m_shader_program, shader.get_native()));
-	return ret_code::OK;
+	return status::OK;
 }
 
-ret_code shader_program::create()
+status shader_program::create()
 {
 	m_shader_program = GL_CALL(glCreateProgram());
-	return ret_code::OK;
+	return status::OK;
 }
 
-ret_code shader_program::link()
+status shader_program::link()
 {
 	GLint is_linked;
 	GL_CALL(glLinkProgram(m_shader_program));
@@ -41,7 +49,7 @@ ret_code shader_program::link()
 		char log[log_len];
 		GL_CALL(glGetProgramInfoLog(m_shader_program, log_len, nullptr, log));
 		DK_LOG_ERROR("Failed to link shader program:\n", (string_view)log);
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	GLsizei count;
@@ -56,7 +64,7 @@ ret_code shader_program::link()
 	}
 
 	DK_LOG_OK("Shader program linked");
-	return ret_code::OK;
+	return status::OK;
 }
 
 }

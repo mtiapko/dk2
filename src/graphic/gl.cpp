@@ -1,6 +1,5 @@
-#include <GL/gl.h>
 #include "log.h"
-#include "graphic/gl_call.h"
+#include "graphic/gl.h"
 #include "containers/string_view.h"
 
 namespace dk

@@ -6,31 +6,31 @@
 namespace dk
 {
 
-ret_code render_window::create()
+status render_window::create()
 {
 	m_display = XOpenDisplay(nullptr);
 	if (m_display == nullptr) {
 		DK_LOG_ERROR("Failed to open display connection");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	m_egl_display = eglGetDisplay(m_display);
 	if (m_egl_display == nullptr) {
 		DK_LOG_ERROR("Failed to get EGL display");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	EGLint egl_major_ver;
 	EGLint egl_minor_ver;
 	if (eglInitialize(m_egl_display, &egl_major_ver, &egl_minor_ver) != EGL_TRUE) {
 		DK_LOG_ERROR("Failed to initialize EGL");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	DK_LOG_OK("EGL v", egl_major_ver, '.', egl_minor_ver, " initialized");
 	if (eglBindAPI(EGL_OPENGL_API) == EGL_FALSE) {
 		DK_LOG_ERROR("EGL failed to bind OpenGL API");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	static EGLint const config_attrib_list[] = {
@@ -47,18 +47,18 @@ ret_code render_window::create()
 	EGLint configs_count;
 	if (eglChooseConfig(m_egl_display, config_attrib_list, &m_config, 1, &configs_count) != EGL_TRUE) {
 		DK_LOG_ERROR("Failed to choose EGL config");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	if (configs_count == 0) {
 		DK_LOG_ERROR("No matching EGL configs found");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	EGLint vi_id;
 	if (eglGetConfigAttrib(m_egl_display, m_config, EGL_NATIVE_VISUAL_ID, &vi_id) != EGL_TRUE) {
 		DK_LOG_ERROR("Failed to get visual info ID from EGL");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	int vi_count;
@@ -66,7 +66,7 @@ ret_code render_window::create()
 	XVisualInfo* vi = XGetVisualInfo(m_display, VisualIDMask | VisualScreenMask, &vi_tmpl, &vi_count);
 	if (vi == nullptr || vi_count == 0) {
 		DK_LOG_ERROR("Failed to get visual info");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	m_window = XCreateWindow(m_display, RootWindow(m_display, vi->screen),
@@ -75,7 +75,7 @@ ret_code render_window::create()
 
 	if (m_window == 0) {
 		DK_LOG_ERROR("Failed to create window");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	DK_LOG_OK("Window created");
@@ -85,7 +85,7 @@ ret_code render_window::create()
 	m_surface = eglCreateWindowSurface(m_egl_display, m_config, m_window, nullptr);
 	if (m_surface == nullptr) {
 		DK_LOG_ERROR("Failed to create window surface");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	static EGLint const context_attrib_list[] = {
@@ -98,7 +98,7 @@ ret_code render_window::create()
 	m_context = eglCreateContext(m_egl_display, m_config, EGL_NO_CONTEXT, context_attrib_list);
 	if (m_context == EGL_NO_CONTEXT) {
 		DK_LOG_ERROR("Failed to create OpenGL context");
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	eglMakeCurrent(m_egl_display, m_surface, m_surface, m_context);
@@ -111,10 +111,10 @@ ret_code render_window::create()
 	DK_LOG("GLSL version: ", (glsl_ver != nullptr ? glsl_ver : "(none)"));
 
 	auto render_sys = core::get_render_sys();
-	if (render_sys->init() != ret_code::OK)
-		return ret_code::ERROR;
+	if (render_sys->init() != status::OK)
+		return status::ERROR;
 
-	return ret_code::OK;
+	return status::OK;
 }
 
 }

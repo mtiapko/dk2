@@ -4,7 +4,7 @@
 #include <chrono>
 #include <iomanip>
 #include <iostream>
-#include "ret_code.h"
+#include "status.h"
 #include "term.h"
 
 #define DK_LOG_HEADER(title, file, func, line) "[" title "] ", dk::log_timestamp{}, " - ", file, "::", func, " (", line, ") - "
@@ -45,10 +45,10 @@ public:
 
 	template<typename... Args> static void print(const Args&... args) { (log{} << ... << args); }
 
-	static ret_code create()
+	static status create()
 	{
 		s_start = std::chrono::steady_clock::now();
-		return ret_code::OK;
+		return status::OK;
 	}
 };
 

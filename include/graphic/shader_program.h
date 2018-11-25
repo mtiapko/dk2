@@ -17,10 +17,12 @@ public:
 	void enable() const;
 	void disable() const;
 
-	ret_code add_shader(const shader& shader) const;
+	GLint get_uniform_location(string_view name);
 
-	ret_code create();
-	ret_code link();
+	status add_shader(const shader& shader) const;
+
+	status create();
+	status link();
 };
 
 }

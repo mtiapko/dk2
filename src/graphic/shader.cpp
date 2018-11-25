@@ -1,7 +1,6 @@
-#include <GL/glew.h>
 #include "log.h"
+#include "graphic/gl.h"
 #include "graphic/shader.h"
-#include "graphic/gl_call.h"
 
 namespace dk
 {
@@ -17,7 +16,7 @@ GLenum shader::convert_type(shader_type type)
 	}
 }
 
-ret_code shader::create(shader_type type, string_view src)
+status shader::create(shader_type type, string_view src)
 {
 	m_shader = GL_CALL(glCreateShader(convert_type(type)));
 
@@ -35,11 +34,11 @@ ret_code shader::create(shader_type type, string_view src)
 		char log[log_len];
 		GL_CALL(glGetShaderInfoLog(m_shader, log_len, nullptr, log));
 		DK_LOG_ERROR("Failed to compile shader:\n", (string_view)log);
-		return ret_code::ERROR;
+		return status::ERROR;
 	}
 
 	DK_LOG_OK("Shader compiled");
-	return ret_code::OK;
+	return status::OK;
 }
 
 }

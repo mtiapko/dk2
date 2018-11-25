@@ -2,7 +2,7 @@
 #define __DK_SHADER_H__
 
 #include <GL/gl.h>
-#include "ret_code.h"
+#include "status.h"
 #include "containers/string_view.h"
 
 namespace dk
@@ -24,7 +24,7 @@ private:
 public:
 	GLuint get_native() const { return m_shader; }
 
-	ret_code create(shader_type type, string_view src);
+	status create(shader_type type, string_view src);
 };
 
 }

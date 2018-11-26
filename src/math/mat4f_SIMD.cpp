@@ -254,9 +254,9 @@ mat4f_SIMD& mat4f_SIMD::orthographic(float left, float right, float bottom, floa
 	const float d = far - near;
 
 	row[0] = _mm_set_ps(-(right + left) / w, 0.0f, 0.0f, 2 / w);
-	row[1] = _mm_set_ps(-(top + bottom) / h, 0.0f, 0.0f, 2 / h);
-	row[2] = _mm_set_ps(-(near + far) / d,   0.0f, 0.0f, 2 / d);
-	row[3] = _mm_set_ps(0.0f, 0.0f, 0.0f, 1.0f);
+	row[1] = _mm_set_ps(-(top + bottom) / h, 0.0f, 2 / h, 0.0f);
+	row[2] = _mm_set_ps(-(near + far) / d, 2 / d,   0.0f, 0.0f);
+	row[3] = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 	return *this;
 }
 
@@ -274,10 +274,15 @@ mat4f_SIMD& mat4f_SIMD::perspective(float fov, float ratio, float near, float fa
 
 mat4f_SIMD& mat4f_SIMD::translate(const vec4f_SIMD& vec)
 {
-	data[3] = SIMD::hadd(_mm_mul_ps(vec.row, row[0]));
+	//  TODO: remove
+	/*data[3] = SIMD::hadd(_mm_mul_ps(vec.row, row[0]));
 	data[7] = SIMD::hadd(_mm_mul_ps(vec.row, row[1]));
 	data[11] = SIMD::hadd(_mm_mul_ps(vec.row, row[2]));
 	data[15] = SIMD::hadd(_mm_mul_ps(vec.row, row[3]));
+	*/
+	data[3] += vec.data[0];
+	data[7] += vec.data[1];
+	data[11] += vec.data[2];
 	return *this;
 }
 
@@ -334,7 +339,7 @@ mat4f_SIMD mat4f_SIMD::get_orthographic(float left, float right, float bottom, f
 	return {
 		_mm_set_ps(-(right + left) / w, 0.0f,  0.0f,  2 / w),
 		_mm_set_ps(-(top + bottom) / h, 0.0f,  2 / h, 0.0f),
-		_mm_set_ps(-(near + far) / d,   2 / d, 0.0f,  0.0f),
+		_mm_set_ps(-(near + far) / d,   -2 / d, 0.0f,  0.0f),
 		_mm_set_ps(1.0f,                0.0f,  0.0f,  0.0f)
 	};
 }

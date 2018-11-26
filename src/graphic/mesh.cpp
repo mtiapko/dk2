@@ -26,9 +26,11 @@ status mesh::load(string_view file_path)
 	fclose(file);
 	file_data[file_stat.st_size] = '\0';
 
-	vector<vec3f> normals(4096);
-	vector<vec3f> uvs(4096);
+	vector<vec3f> normals;
+	vector<vec3f> uvs;
 
+	normals.reserve(4096);
+	uvs.reserve(4096);
 	size_t i = 0;
 	while (file_data[i] != '\0') {
 		char c = file_data[i++];
@@ -81,8 +83,8 @@ status mesh::load(string_view file_path)
 			uint32_t n[3];
 			uint32_t u[3];
 			size_t len;
-			if (sscanf(&file_data[i], " %u/%u/%u %u/%u/%u %u/%u/%u %zn", &i1, &n[0], &u[0],
-					&i2, &n[1], &u[1], &i3, &n[2], &u[2], &len) != 9) {
+			if (sscanf(&file_data[i], " %u/%u/%u %u/%u/%u %u/%u/%u %zn", &i1, &u[0], &n[0],
+					&i2, &u[1], &n[1], &i3, &u[2], &n[2], &len) != 9) {
 				return status::ERROR;
 			}
 

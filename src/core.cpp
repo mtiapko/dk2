@@ -16,7 +16,7 @@ status core::run()
 	if (s_app->create() != status::OK)
 		return status::ERROR;
 
-	clock clk(5);
+	clock clk(30);
 	s_running = true;
 	auto avr = std::chrono::microseconds::zero();
 	size_t count = 0;

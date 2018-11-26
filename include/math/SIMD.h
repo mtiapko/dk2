@@ -11,6 +11,15 @@
 #	error Platform does not support SSE
 #endif
 
+//  TODO:
+#ifdef USE_FAST_SSE_DIVISION
+#define SSE_DIVIDE(x, y) _mm_mul_ps(x, _mm_rcp_ps(y))  //  x * approximate(1.0f / y)
+#define SSE_ONE_DIVIDE_BY(x) _mm_rcp_ps(x)  //  approximate(1.0f / x)
+#else
+#define SSE_DIVIDE(x, y) _mm_div_ps(x, y)  //  x / y
+#define SSE_ONE_DIVIDE_BY(x) _mm_div_ps(_mm_set_ps1(1.0f), x)  //  1.0f / x
+#endif
+
 namespace dk
 {
 

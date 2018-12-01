@@ -28,14 +28,10 @@ status render_window::create()
 	}
 
 	DK_LOG_OK("EGL v", egl_major_ver, '.', egl_minor_ver, " initialized");
-	if (eglBindAPI(EGL_OPENGL_API) == EGL_FALSE) {
-		DK_LOG_ERROR("EGL failed to bind OpenGL API");
-		return status::ERROR;
-	}
-
 	static EGLint const config_attrib_list[] = {
 		EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
-		//EGL_BUFFER_SIZE,     32,
+		EGL_DEPTH_SIZE,      24,
+		EGL_BUFFER_SIZE,     32,
 		//EGL_RED_SIZE,        8,
 		//EGL_GREEN_SIZE,      8,
 		//EGL_BLUE_SIZE,       8,
@@ -81,6 +77,11 @@ status render_window::create()
 	DK_LOG_OK("Window created");
 	XStoreName(m_display, m_window, "tst | v0.0.1");
 	XMapWindow(m_display, m_window);
+
+	if (eglBindAPI(EGL_OPENGL_API) == EGL_FALSE) {
+		DK_LOG_ERROR("EGL failed to bind OpenGL API");
+		return status::ERROR;
+	}
 
 	m_surface = eglCreateWindowSurface(m_egl_display, m_config, m_window, nullptr);
 	if (m_surface == nullptr) {

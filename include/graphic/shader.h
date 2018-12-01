@@ -11,7 +11,8 @@ namespace dk
 enum class shader_type
 {
 	VERTEX_SHADER = 0,
-	FRAGMENT_SHADER
+	FRAGMENT_SHADER,
+	GEOMETRY_SHADER
 };
 
 class shader

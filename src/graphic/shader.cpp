@@ -10,6 +10,7 @@ GLenum shader::convert_type(shader_type type)
 	switch (type) {
 		case shader_type::VERTEX_SHADER: return GL_VERTEX_SHADER;
 		case shader_type::FRAGMENT_SHADER: return GL_FRAGMENT_SHADER;
+		case shader_type::GEOMETRY_SHADER: return GL_GEOMETRY_SHADER;
 		default:
 			DK_LOG_ERROR("Unsupported shader type");
 			return 0;

@@ -1,30 +1,40 @@
 #include "log.h"
 #include "app.h"
 #include "core.h"
-#include "utils/clock.h"
+#include "event_system.h"
+#include "events/create_event.h"
+#include "events/destroy_event.h"
+#include "events/update_event.h"
+#include "events/render_event.h"
 #include "graphic/render_system.h"
+#include "utils/clock.h"
 
 namespace dk
 {
 
-bool          core::s_running;
 render_system core::s_active_render_sys;
-application*  core::s_app;
 
 status core::run()
 {
-	if (s_app->create() != status::OK)
-		return status::ERROR;
+	struct : public event_listener<destroy_event>
+	{
+		bool is_running = true;
+		void handle(const destroy_event&) override { is_running = false; }
+	} app;
+
+	event_system<destroy_event>::get().subscribe(&app);
+	event_system<create_event>::get().send();
 
 	clock clk(30);
-	s_running = true;
-	auto avr = std::chrono::microseconds::zero();
 	size_t count = 0;
-	while (s_running) {
+	auto avr = std::chrono::microseconds::zero();
+	auto& update_event_sys = event_system<update_event>::get();
+	auto& render_event_sys = event_system<render_event>::get();
+	while (app.is_running) {
 		//  TODO: clk.is_elapsed()
 		auto beg = std::chrono::high_resolution_clock::now();
-		s_app->update();
-		s_app->render();
+		update_event_sys.send();
+		render_event_sys.send();
 		auto end = std::chrono::high_resolution_clock::now();
 		auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - beg);
 		avr += diff;
@@ -38,9 +48,8 @@ status core::run()
 	return status::OK;
 }
 
-status core::create(application* app)
+status core::create()
 {
-	s_app = app;
 	if (log::create() != status::OK)
 		return status::ERROR;
 

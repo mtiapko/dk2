@@ -1,7 +1,7 @@
 CC := g++
 LD := g++
 
-CC_FLAGS := -std=c++2a -MMD -MP -Ofast
+CC_FLAGS := -std=c++2a -MMD -MP -g
 CC_INCLUDES := -I./include
 CC_DEFINES :=
 

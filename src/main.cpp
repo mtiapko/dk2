@@ -3,13 +3,21 @@
 #include "log.h"
 #include "app.h"
 #include "core.h"
+#include "event_system.h"
+#include "events/create_event.h"
+#include "events/destroy_event.h"
+#include "events/update_event.h"
+#include "events/render_event.h"
 #include "graphic/gl.h"
 #include "graphic/mesh.h"
 #include "graphic/texture.h"
 #include "graphic/render_system.h"
 #include "containers/string_view.h"
 
-class test_app : public dk::application
+class test_app : public dk::application,
+	dk::event_listener<dk::create_event>,
+	dk::event_listener<dk::update_event>,
+	dk::event_listener<dk::render_event>
 {
 private:
 	dk::render_window* wnd;
@@ -19,6 +27,27 @@ private:
 	dk::shader_program prog;
 
 public:
+	test_app()
+	{
+		dk::event_system<dk::create_event>::get().subscribe(this);
+	}
+
+	void handle(const dk::create_event&) override
+	{
+		if (this->create() != dk::status::OK)
+			dk::event_system<dk::destroy_event>::get().send();
+	}
+
+	void handle(const dk::update_event&) override
+	{
+		this->update();
+	}
+
+	void handle(const dk::render_event&) override
+	{
+		this->render();
+	}
+
 	void update() override
 	{
 		mat *= mat.get_rot_y(1.0f);
@@ -28,7 +57,6 @@ public:
 	void render() override
 	{
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		//glDrawArrays(GL_TRIANGLES, 0, house.m_indices.size());
 
 		prog.enable();
 		auto location = prog.get_uniform_location("mat");
@@ -40,6 +68,9 @@ public:
 
 	dk::status create() override
 	{
+		dk::event_system<dk::update_event>::get().subscribe(this);
+		dk::event_system<dk::render_event>::get().subscribe(this);
+
 		auto render_sys = dk::core::get_render_sys();
 		if (render_sys == nullptr)
 			return dk::status::ERROR;
@@ -65,18 +96,13 @@ public:
 		if (prog.link() != dk::status::OK)
 			return dk::status::ERROR;
 
-		if (house.load("res/d/Gost House (5).obj") != dk::status::OK)
+		if (house.load("res/house.obj") != dk::status::OK)
 			return dk::status::ERROR;
 
-		if (obj_tex.create("res/d/House Body.bmp") != dk::status::OK)
+		if (obj_tex.create("res/old_house/DSC_5871_.jpg") != dk::status::OK)
 			return dk::status::ERROR;
 
 		obj_tex.enable();
-		/*static const GLfloat g_vertex_buffer_data[] = {
-			-1.0f, -1.0f, 0.0f,
-			1.0f, -1.0f, 0.0f,
-			0.0f,  1.0f, 0.0f,
-		};*/
 
 		GLuint VertexArrayID;
 		GL_CALL(glGenVertexArrays(1, &VertexArrayID));
@@ -142,7 +168,7 @@ public:
 int main()
 {
 	test_app app;
-	if (dk::core::create(&app) != dk::status::OK)
+	if (dk::core::create() != dk::status::OK)
 		return -1;
 
 	if (dk::core::run() != dk::status::OK)

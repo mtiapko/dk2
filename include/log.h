@@ -5,7 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include "status.h"
-#include "term.h"
+#include "util/term.h"
 
 #define DK_LOG_HEADER(title, file, func, line) "[" title "] ", dk::log_timestamp{}, " - ", file, "::", func, " (", line, ") - "
 #define DK_LOG_PRINT(title, file, func, line, ...) dk::log::print(DK_LOG_HEADER(title, file, func, line), __VA_ARGS__)
@@ -32,9 +32,9 @@ private:
 
 public:
 	template<typename T> log operator<<(const T& t) const noexcept { std::clog << t; return {}; }
-	log operator<<(term_text_attrib attrib) const noexcept { term::set(attrib); return {}; }
-	log operator<<(term_text_color color) const noexcept { term::set(color); return {}; }
-	log operator<<(term_back_color color) const noexcept { term::set(color); return {}; }
+	log operator<<(util::term_text_attrib attrib) const noexcept { util::term::set(attrib); return {}; }
+	log operator<<(util::term_text_color color) const noexcept { util::term::set(color); return {}; }
+	log operator<<(util::term_back_color color) const noexcept { util::term::set(color); return {}; }
 
 	log operator<<(log_timestamp) const noexcept {
 		auto now = std::chrono::steady_clock::now();

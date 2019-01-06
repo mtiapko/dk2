@@ -9,9 +9,9 @@ namespace dk
 class mem_std
 {
 public:
-	static uint8_t* alloc(size_t size, string_view file, string_view func, size_t line) noexcept;
-	static void     dealloc(uint8_t* ptr, string_view file, string_view func, size_t line) noexcept;
-	static uint8_t* realloc(uint8_t* ptr, size_t new_size, string_view file, string_view func, size_t line) noexcept;
+	static void* alloc(size_t size, string_view file, string_view func, size_t line) noexcept;
+	static void  dealloc(void* ptr, string_view file, string_view func, size_t line) noexcept;
+	static void* realloc(void* ptr, size_t new_size, string_view file, string_view func, size_t line) noexcept;
 };
 
 }

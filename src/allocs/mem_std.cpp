@@ -4,16 +4,16 @@
 namespace dk
 {
 
-/* static */ uint8_t* mem_std::alloc(size_t size, string_view file, string_view func, size_t line) noexcept
+/* static */ void* mem_std::alloc(size_t size, string_view file, string_view func, size_t line) noexcept
 {
 	//  TODO: write logging for allocation
 	(void)file;
 	(void)func;
 	(void)line;
-	return (uint8_t*)malloc(size);
+	return malloc(size);
 }
 
-/* static */ void mem_std::dealloc(uint8_t* ptr, string_view file, string_view func, size_t line) noexcept
+/* static */ void mem_std::dealloc(void* ptr, string_view file, string_view func, size_t line) noexcept
 {
 	//  TODO: write logging for deallocation
 	(void)file;
@@ -22,13 +22,13 @@ namespace dk
 	return free(ptr);
 }
 
-/* static */ uint8_t* mem_std::realloc(uint8_t* ptr, size_t new_size, string_view file, string_view func, size_t line) noexcept
+/* static */ void* mem_std::realloc(void* ptr, size_t new_size, string_view file, string_view func, size_t line) noexcept
 {
 	//  TODO: write logging for reallocation
 	(void)file;
 	(void)func;
 	(void)line;
-	return (uint8_t*)::realloc(ptr, new_size);
+	return ::realloc(ptr, new_size);
 }
 
 }

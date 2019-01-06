@@ -9,9 +9,9 @@
 	func, \
 	[](string_view func_name) { \
 		if(auto err = alGetError(); err != AL_NO_ERROR) \
-			DK_LOG_ERROR(__FILE__, func_name, __LINE__, \
+			DK_LOG_ERROR_IMPL(__FILE__, func_name, __LINE__, \
 				"OpenAL function '", #func, "' failed: ", debug::code_to_str(err)); \
-	}(__FILE__)
+	}(__func__)
 
 namespace dk::audio
 {

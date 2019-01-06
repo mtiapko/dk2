@@ -30,7 +30,7 @@ ALCcontext* core::s_context;
 		return status::ERROR;
 
 	ALfloat orientation[] = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f };
-	AL_CALL(alListener3f(AL_POSITION, 0.0f, 0.0f, 0.0f));
+	AL_CALL(alListener3f(AL_POSITION, 0.0f, 0.0f, 1.0f));
 	AL_CALL(alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f));
 	AL_CALL(alListenerfv(AL_ORIENTATION, orientation));
 	return status::OK;

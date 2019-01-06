@@ -21,13 +21,12 @@ sound::~sound() noexcept
 			if (num_channels == 1) return AL_FORMAT_MONO8;
 			else if (num_channels == 2) return AL_FORMAT_STEREO8;
 
-			break;
+			DK_LOG_ERROR("Unsupported sound channels count: ", num_channels);
+			return 0;
 		case 16:
 			if (num_channels == 1) return AL_FORMAT_MONO16;
 			else if (num_channels == 2) return AL_FORMAT_STEREO16;
 
-			break;
-		default:
 			DK_LOG_ERROR("Unsupported sound channels count: ", num_channels);
 			return 0;
 	}

@@ -18,17 +18,17 @@ int main()
 	if (auto res = src.create(); !res)
 		return res;
 
-	audio::sound_data wind_data;
-	if (auto res = wind_data.create("res/audio/wind.wav"); !res)
+	audio::sound_data sint_data;
+	if (auto res = sint_data.create("res/audio/sint.wav"); !res)
 		return res;
 
-	audio::sound wind;
-	if (auto res = wind.create(wind_data); !res)
+	audio::sound sint;
+	if (auto res = sint.create(sint_data); !res)
 		return res;
 
-	src.set_gain(10.0f);
-	src.set_pitch(2.0f);
-	src.set_sound(wind);
+	src.set_gain(1.0f);
+	src.set_pitch(1.0f);
+	src.set_sound(sint);
 	src.play();
 	if (auto res = core::run(); !res)
 		return res;

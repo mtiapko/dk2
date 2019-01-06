@@ -9,91 +9,98 @@ namespace dk::fs
 {
 
 file::file() noexcept
-	: m_id(-1)
+	: m_id(BAD_ID)
 {}
 
 file::~file() noexcept
 {
-	if (m_id >= 0)
-		close(m_id);  //  TODO: write close() method
+	close();
+}
+
+/* static */ status file::read(string_view path, string& data) noexcept
+{
+	file file;
+	if (auto res = file.open(path); !res)
+		return res;
+
+	size_t size;
+	if (auto res = file.size(size); !res)
+		return res;
+
+	if (size == BAD_SIZE) {
+		DK_LOG_ERROR("File '", path, "' has undefined size");
+		return status::ERROR;
+	}
+
+	size = file.read(data.data(), data.size());
+	if (size == BAD_SIZE)
+		return status::ERROR;
+
+	if (size != data.size()) {
+		DK_LOG_ERROR("Failed to read whole file '", path, '\'');
+		return status::ERROR;
+	}
+
+	return status::OK;
 }
 
 status file::open(string_view path) noexcept
 {
-	m_path = path;
-	return open(path, m_id);
-}
-
-status file::read(uint8_t* data, size_t size) const noexcept
-{
-	if ((size_t)::read(m_id, data, size) != size) {
-		DK_LOG_ERROR("Failed to read ", size, " byte(s) from file '", m_path, '\'');
-		return status::ERROR;
-	}
-
-	return status::OK;
-}
-
-status file::size(size_t& size_val) const noexcept
-{
-	return size(size_val, m_path, m_id);
-}
-
-/* static */ status file::open(string_view path, int& id) noexcept
-{
+	/* XXX: if path has wrong value - can be buffer overrun */
 	DK_ASSERT(!path.empty() && *(path.data() + path.size()) == '\0');
 
-	id = ::open(path.data(), O_RDONLY);
-	if (id < 0) {
-		DK_LOG_ERROR("Failed to open file '", path, ": ", strerror(errno));
+	m_path = path;
+	m_id = ::open(path.data(), O_RDONLY);
+	if (m_id == BAD_ID) {
+		DK_LOG_ERROR("Failed to open file '", path, "': ", strerror(errno));
 		return status::ERROR;
 	}
 
 	return status::OK;
 }
 
-/* static */ status file::read(string& data, const string_view& path, int id) noexcept
+status file::close() noexcept
 {
-	size_t size;
-	if (auto res = file::size(size, path, id); !res)
-		return res;
-
-	data.resize(size);
-	if ((size_t)::read(id, data.data(), data.size()) != size) {
-		DK_LOG_ERROR("Failed to read file '", path, '\'');
+	if (m_id >= BAD_ID && ::close(m_id) < 0) {
+		DK_LOG_ERROR("Failed to close file '", m_path, "': ", strerror(errno));
 		return status::ERROR;
 	}
 
+	m_id = BAD_ID;
 	return status::OK;
 }
 
-/* static */ status file::size(size_t& size_val, const string_view& path, int id) noexcept
+status file::size(size_t& val) const noexcept
 {
 	struct stat stat;
-	if (fstat(id, &stat) < 0) {
-		DK_LOG_ERROR("Failed to get stat of file '", path, ": ", strerror(errno));
-		return 0;
+	if (fstat(m_id, &stat) < 0) {
+		DK_LOG_ERROR("Failed to get stat of file '", m_path, "': ", strerror(errno));
+		return status::ERROR;
 	}
 
-	if (stat.st_size < 0) {
-		DK_LOG_ERROR("Failed to get size of file '", path, '\'');
-		return 0;
-	}
-
-	size_val = stat.st_size;
+	val = stat.st_size;
 	return status::OK;
 }
 
-/* static */ status file::read(string& data, string_view path) noexcept
+status file::move_cursor(ssize_t offset) const noexcept
 {
-	int id;
-	if (auto res = open(path, id); !res)
-		return res;
+	if (lseek(m_id, offset, SEEK_CUR) < 0) {
+		DK_LOG_ERROR("Failed to move cursor in file '", m_path, "': ", strerror(errno));
+		return status::ERROR;
+	}
 
-	auto res = read(data, path, id);
-	::close(id);
+	return status::OK;
+}
 
-	return res;
+size_t file::read(void* data, size_t max_size) const noexcept
+{
+	size_t size = ::read(m_id, data, max_size);
+	if (size == BAD_SIZE) {
+		DK_LOG_ERROR("Failed to read file '", m_path, "': ", strerror(errno));
+		return BAD_SIZE;
+	}
+
+	return size;
 }
 
 }

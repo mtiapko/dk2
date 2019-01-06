@@ -18,17 +18,20 @@ public:
 	file() noexcept;
 	~file() noexcept;
 
+	static constexpr int    BAD_ID = -1;
+	static constexpr size_t BAD_SIZE = (size_t)-1;
+	static constexpr size_t END_OF_FILE = 0;
+
+	static status read(string_view path, string& data) noexcept;
+
 	status open(string_view path) noexcept;
-	status read(uint8_t* data, size_t size) const noexcept;
-	status size(size_t& size_val) const noexcept;
+	status close() noexcept;
 
-	//  TODO: is it needed: size_t read_to_buff(uint8_t* data, size_t max_size) noexcept; ???
+	status size(size_t& val) const noexcept;
+	status move_cursor(ssize_t offset) const noexcept;
+	size_t read(void* data, size_t max_size) const noexcept;
 
-	static status open(string_view path, int& fd) noexcept;
-	static status read(string& data, const string_view& path, int id) noexcept;
-	static status size(size_t& size_val, const string_view& path, int id) noexcept;
-
-	static status read(string& data, string_view path) noexcept;
+	template<typename T> size_t read(T& data) const noexcept { return this->read(&data, sizeof(T)); }
 };
 
 }

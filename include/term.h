@@ -58,9 +58,9 @@ enum class term_back_color : uint32_t
 class term
 {
 public:
-	static void set(term_text_attrib attrib);
-	static void set(term_text_color color);
-	static void set(term_back_color color);
+	static void set(term_text_attrib attrib) noexcept;
+	static void set(term_text_color color) noexcept;
+	static void set(term_back_color color) noexcept;
 };
 
 }

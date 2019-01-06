@@ -31,21 +31,21 @@ private:
 	static inline std::chrono::steady_clock::time_point s_start;
 
 public:
-	template<typename T> log operator<<(const T& t) const { std::clog << t; return {}; }
-	log operator<<(term_text_attrib attrib) const { term::set(attrib); return {}; }
-	log operator<<(term_text_color color) const { term::set(color); return {}; }
-	log operator<<(term_back_color color) const { term::set(color); return {}; }
+	template<typename T> log operator<<(const T& t) const noexcept { std::clog << t; return {}; }
+	log operator<<(term_text_attrib attrib) const noexcept { term::set(attrib); return {}; }
+	log operator<<(term_text_color color) const noexcept { term::set(color); return {}; }
+	log operator<<(term_back_color color) const noexcept { term::set(color); return {}; }
 
-	log operator<<(log_timestamp) const {
+	log operator<<(log_timestamp) const noexcept {
 		auto now = std::chrono::steady_clock::now();
 		auto dur = std::chrono::duration_cast<std::chrono::microseconds>(now - s_start).count();
 		std::clog << dur / 1000.0f << " ms";
 		return {};
 	}
 
-	template<typename... Args> static void print(const Args&... args) { (log{} << ... << args); }
+	template<typename... Args> static void print(const Args&... args) noexcept { (log{} << ... << args); }
 
-	static status create()
+	static status create() noexcept
 	{
 		s_start = std::chrono::steady_clock::now();
 		return status::OK;

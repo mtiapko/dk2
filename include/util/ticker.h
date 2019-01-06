@@ -14,13 +14,13 @@ private:
 	std::chrono::high_resolution_clock::duration   m_update_interval;
 
 public:
-	ticker(uint32_t UPS)
+	ticker(uint32_t UPS) noexcept
 	{
 		m_update_interval = std::chrono::high_resolution_clock::duration(std::chrono::seconds(1)) / UPS;
 		m_last = std::chrono::high_resolution_clock::now();
 	}
 
-	void wait()
+	void wait() noexcept
 	{
 		auto now = std::chrono::high_resolution_clock::now();
 		auto diff = now - m_last;

@@ -1,6 +1,6 @@
 #include <GL/gl.h>
 #include "log.h"
-#include "sys/core.h"
+#include "core.h"
 #include "sys/renderer_window.h"
 
 namespace dk::sys

@@ -26,9 +26,9 @@ public:
 
 	void set_pitch(float val) const noexcept;
 	void set_gain(float val) const noexcept;
-	void set_pos(float x, float y, float z) const noexcept;
-	void set_dir(float x, float y, float z) const noexcept;
-	void set_velocity(float x, float y, float z) const noexcept;
+	void set_pos(math::vec3f val) const noexcept;
+	void set_dir(math::vec3f val) const noexcept;
+	void set_velocity(math::vec3f val) const noexcept;
 	void set_looping(bool val) const noexcept;
 
 	float pitch() const noexcept;

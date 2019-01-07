@@ -50,19 +50,19 @@ void source::set_gain(float val) const noexcept
 	AL_CALL(alSourcef(m_id, AL_GAIN, val));
 }
 
-void source::set_pos(float x, float y, float z) const noexcept
+void source::set_pos(math::vec3f val) const noexcept
 {
-	AL_CALL(alSource3f(m_id, AL_POSITION, x, y, z));
+	AL_CALL(alSource3f(m_id, AL_POSITION, val.x, val.y, val.z));
 }
 
-void source::set_dir(float x, float y, float z) const noexcept
+void source::set_dir(math::vec3f val) const noexcept
 {
-	AL_CALL(alSource3f(m_id, AL_DIRECTION, x, y, z));
+	AL_CALL(alSource3f(m_id, AL_DIRECTION, val.x, val.y, val.z));
 }
 
-void source::set_velocity(float x, float y, float z) const noexcept
+void source::set_velocity(math::vec3f val) const noexcept
 {
-	AL_CALL(alSource3f(m_id, AL_VELOCITY, x, y, z));
+	AL_CALL(alSource3f(m_id, AL_VELOCITY, val.x, val.y, val.z));
 }
 
 void source::set_looping(bool val) const noexcept
@@ -117,8 +117,9 @@ status source::create() noexcept
 	AL_CALL(alGenSources(1, &m_id));
 	this->set_pitch(1.0f);
 	this->set_gain(1.0f);
-	this->set_pos(0.0f, 0.0f, 0.0f);
-	this->set_velocity(0.0f, 0.0f, 0.0f);
+	this->set_pos({ 0.0f, 0.0f, -1.0f });
+	this->set_dir({ 0.0f, 0.0f, 0.0f });
+	this->set_velocity({ 0.0f, 0.0f, 0.0f });
 	this->set_looping(false);
 
 	return status::OK;

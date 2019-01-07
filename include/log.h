@@ -7,13 +7,15 @@
 #include "status.h"
 #include "util/term.h"
 
-#define DK_LOG_HEADER(title, file, func, line) "[" title "] ", dk::log_timestamp{}, " - ", file, "::", func, " (", line, ") - "
-#define DK_LOG_PRINT(title, file, func, line, ...) dk::log::print(DK_LOG_HEADER(title, file, func, line), __VA_ARGS__)
+#define DK_LOG_COLOR(color, txt) dk::util::term_text_color::color, dk::util::term_text_attrib::BOLD, txt, dk::util::term_text_attrib::DEFAULT
 
-#define DK_LOG_IMPL(file, func, line, ...)         DK_LOG_PRINT("  MSG  ", file, func, line, __VA_ARGS__, '\n')
-#define DK_LOG_OK_IMPL(file, func, line, ...)      DK_LOG_PRINT("  OK!  ", file, func, line, __VA_ARGS__, '\n')
-#define DK_LOG_WARNING_IMPL(file, func, line, ...) DK_LOG_PRINT("WARNING", file, func, line, __VA_ARGS__, '\n')
-#define DK_LOG_ERROR_IMPL(file, func, line, ...)   DK_LOG_PRINT(" ERROR ", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_HEADER(color, title, file, func, line) "[", DK_LOG_COLOR(color, title), "] ", dk::log_timestamp{}, " - ", file, "::", func, " (", line, ") - "
+#define DK_LOG_PRINT(color, title, file, func, line, ...) dk::log::print(DK_LOG_HEADER(color, title, file, func, line), __VA_ARGS__)
+
+#define DK_LOG_IMPL(file, func, line, ...)         DK_LOG_PRINT(LIGHT_BLUE,   "  MSG  ", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_OK_IMPL(file, func, line, ...)      DK_LOG_PRINT(LIGHT_GREEN,  "  OK!  ", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_WARNING_IMPL(file, func, line, ...) DK_LOG_PRINT(LIGHT_YELLOW, "WARNING", file, func, line, __VA_ARGS__, '\n')
+#define DK_LOG_ERROR_IMPL(file, func, line, ...)   DK_LOG_PRINT(LIGHT_RED,    " ERROR ", file, func, line, __VA_ARGS__, '\n')
 
 #define DK_LOG(...)         DK_LOG_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)
 #define DK_LOG_OK(...)      DK_LOG_OK_IMPL(__FILE__, __func__, __LINE__, __VA_ARGS__)

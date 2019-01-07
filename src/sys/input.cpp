@@ -1,4 +1,3 @@
-#include <string.h>
 #include "sys/input.h"
 #include "sys/keyboard.h"
 #include "sys/event_manager.h"
@@ -14,10 +13,16 @@
 namespace dk::sys
 {
 
-namespace
+namespace  //  TODO: make this static member and include everything in input.h file?
 {
 	/* key codes lie in the inclusive range [8, 255] */
-	keyboard_btn keyboard_btn_map[256];
+	keyboard_btn keyboard_btn_map[256];  //  TODO: make map for mouse buttons?
+
+	auto& key_press_event_mgr     = event_manager<key_press_event>::get();
+	auto& key_release_event_mgr   = event_manager<key_release_event>::get();
+	auto& mouse_move_event_mgr    = event_manager<mouse_move_event>::get();
+	auto& mouse_press_event_mgr   = event_manager<mouse_press_event>::get();
+	auto& mouse_release_event_mgr = event_manager<mouse_release_event>::get();
 }
 
 /* static */ void input::update() noexcept
@@ -28,11 +33,11 @@ namespace
 		do {
 			XNextEvent(graph::window::display(), &event);
 			switch (event.type) {
-				case KeyPress: event_manager<key_press_event>::get().send(keyboard_btn_map[event.xkey.keycode]); break;
-				case KeyRelease: event_manager<key_release_event>::get().send(keyboard_btn_map[event.xkey.keycode]); break;
-				case MotionNotify: event_manager<mouse_move_event>::get().send(event.xmotion.x, event.xmotion.y); break;
-				case ButtonPress: event_manager<mouse_press_event>::get().send((mouse_btn)event.xbutton.button); break;
-				case ButtonRelease: event_manager<mouse_release_event>::get().send((mouse_btn)event.xbutton.button); break;
+				case KeyPress:      key_press_event_mgr.send(keyboard_btn_map[event.xkey.keycode]); break;
+				case KeyRelease:    key_release_event_mgr.send(keyboard_btn_map[event.xkey.keycode]); break;
+				case MotionNotify:  mouse_move_event_mgr.send(event.xmotion.x, event.xmotion.y); break;
+				case ButtonPress:   mouse_press_event_mgr.send((mouse_btn)event.xbutton.button); break;
+				case ButtonRelease: mouse_release_event_mgr.send((mouse_btn)event.xbutton.button); break;
 			}
 		} while (--event_count);
 	}
@@ -40,7 +45,9 @@ namespace
 
 /* static */ status input::create() noexcept
 {
-	memset(keyboard_btn_map, (int)keyboard_btn::UNKNOWN, sizeof(keyboard_btn_map));
+	static_assert((int)keyboard_btn::UNKNOWN == 0,
+		"static variable equals to zero (.bss segment), fill with UNKNOWN manually");
+	/* memset(keyboard_btn_map, (int)keyboard_btn::UNKNOWN, sizeof(keyboard_btn_map)); */
 
 	keyboard_btn_map[KEY(1)]   = keyboard_btn::ESCAPE;
 	keyboard_btn_map[KEY(15)]  = keyboard_btn::TAB;

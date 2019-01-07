@@ -61,7 +61,7 @@ status file::open(string_view path) noexcept
 
 status file::close() noexcept
 {
-	if (m_id >= BAD_ID && ::close(m_id) < 0) {
+	if (m_id != BAD_ID && ::close(m_id) < 0) {
 		DK_LOG_ERROR("Failed to close file '", m_path, "': ", strerror(errno));
 		return status::ERROR;
 	}

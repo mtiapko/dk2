@@ -58,7 +58,7 @@ public:
 			return res;
 
 		audio::sound_data sint_data;
-		if (auto res = sint_data.create("res/audio/sint.wav"); !res)
+		if (auto res = sint_data.create("res/audio/atc-around_the_world.wav"); !res)
 			return res;
 
 		if (auto res = m_sint.create(sint_data); !res)

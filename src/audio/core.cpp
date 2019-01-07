@@ -4,8 +4,8 @@
 namespace dk::audio
 {
 
-ALCdevice* core::s_device;
-ALCcontext* core::s_context;
+/* static */ ALCdevice* core::s_device;
+/* static */ ALCcontext* core::s_context;
 
 /* static */ status core::create() noexcept
 {
@@ -29,10 +29,6 @@ ALCcontext* core::s_context;
 	if (alcMakeContextCurrent(s_context) != ALC_TRUE)
 		return status::ERROR;
 
-	ALfloat orientation[] = { 0.0f, 0.0f, -1.0f, 0.0f, 1.0f, 0.0f };
-	AL_CALL(alListener3f(AL_POSITION, 0.0f, 0.0f, 1.0f));
-	AL_CALL(alListener3f(AL_VELOCITY, 0.0f, 0.0f, 0.0f));
-	AL_CALL(alListenerfv(AL_ORIENTATION, orientation));
 	return status::OK;
 }
 

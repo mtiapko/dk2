@@ -10,8 +10,7 @@ sound::sound() noexcept
 
 sound::~sound() noexcept
 {
-	if (m_id != 0)
-		AL_CALL(alDeleteBuffers(1, &m_id));
+	this->destroy();
 }
 
 /* static */ ALenum sound::convert_to_al_fmt(uint32_t num_channels, uint32_t bits_per_sample) noexcept
@@ -40,6 +39,14 @@ status sound::create(const sound_data& data) noexcept
 	AL_CALL(alGenBuffers(1, &m_id));
 	AL_CALL(alBufferData(m_id, convert_to_al_fmt(data.num_channels(), data.bits_per_sample()), data.data(), data.size(), data.sample_rate()));
 	return status::OK;
+}
+
+void sound::destroy() noexcept
+{
+	if (m_id != 0) {
+		AL_CALL(alDeleteBuffers(1, &m_id));
+		m_id = 0;
+	}
 }
 
 }

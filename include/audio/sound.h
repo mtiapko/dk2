@@ -21,6 +21,7 @@ public:
 	ALuint id() const noexcept { return m_id; }
 
 	status create(const sound_data& data) noexcept;
+	void destroy() noexcept;
 };
 
 }

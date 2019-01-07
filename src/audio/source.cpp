@@ -34,6 +34,12 @@ void source::set_sound(const sound& snd) const noexcept
 	AL_CALL(alSourcei(m_id, AL_BUFFER, snd.id()));
 }
 
+void source::remove_sound() const noexcept
+{
+	this->stop();
+	AL_CALL(alSourcei(m_id, AL_BUFFER, 0));
+}
+
 void source::set_pitch(float val) const noexcept
 {
 	AL_CALL(alSourcef(m_id, AL_PITCH, val));
@@ -49,14 +55,61 @@ void source::set_pos(float x, float y, float z) const noexcept
 	AL_CALL(alSource3f(m_id, AL_POSITION, x, y, z));
 }
 
-void source::set_vel(float x, float y, float z) const noexcept
+void source::set_dir(float x, float y, float z) const noexcept
+{
+	AL_CALL(alSource3f(m_id, AL_DIRECTION, x, y, z));
+}
+
+void source::set_velocity(float x, float y, float z) const noexcept
 {
 	AL_CALL(alSource3f(m_id, AL_VELOCITY, x, y, z));
 }
 
-void source::set_loop(bool val) const noexcept
+void source::set_looping(bool val) const noexcept
 {
 	AL_CALL(alSourcei(m_id, AL_LOOPING, val));
+}
+
+float source::pitch() const noexcept
+{
+	float val;
+	AL_CALL(alGetSourcef(m_id, AL_PITCH, &val));
+	return val;
+}
+
+float source::gain() const noexcept
+{
+	float val;
+	AL_CALL(alGetSourcef(m_id, AL_GAIN, &val));
+	return val;
+}
+
+math::vec3f source::pos() const noexcept
+{
+	math::vec3f val;
+	AL_CALL(alGetSource3f(m_id, AL_POSITION, &val.x, &val.y, &val.z));
+	return val;
+}
+
+math::vec3f source::dir() const noexcept
+{
+	math::vec3f val;
+	AL_CALL(alGetSource3f(m_id, AL_DIRECTION, &val.x, &val.y, &val.z));
+	return val;
+}
+
+math::vec3f source::velocity() const noexcept
+{
+	math::vec3f val;
+	AL_CALL(alGetSource3f(m_id, AL_VELOCITY, &val.x, &val.y, &val.z));
+	return val;
+}
+
+bool source::looping() const noexcept
+{
+	int val;
+	AL_CALL(alGetSourcei(m_id, AL_LOOPING, &val));
+	return val;
 }
 
 status source::create() noexcept
@@ -65,8 +118,8 @@ status source::create() noexcept
 	this->set_pitch(1.0f);
 	this->set_gain(1.0f);
 	this->set_pos(0.0f, 0.0f, 0.0f);
-	this->set_vel(0.0f, 0.0f, 0.0f);
-	this->set_loop(false);
+	this->set_velocity(0.0f, 0.0f, 0.0f);
+	this->set_looping(false);
 
 	return status::OK;
 }

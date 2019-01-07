@@ -28,7 +28,7 @@ struct log_timestamp {};
 class log
 {
 private:
-	static inline std::chrono::steady_clock::time_point s_start;
+	static inline std::chrono::steady_clock::time_point s_start;  //  TODO: inline with plugins? will be 2 instances???
 
 public:
 	template<typename T> log operator<<(const T& t) const noexcept { std::clog << t; return {}; }

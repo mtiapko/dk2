@@ -19,8 +19,11 @@ public:
 
 	void subscribe(event_listener<EventT>* listener) noexcept
 	{
+		//  TODO: check is unique
 		m_listeners.emplace_back(listener);
 	}
+
+	//  TODO: unsubscribe()
 
 	template<typename... Args>
 	void send(Args&&... args) const noexcept

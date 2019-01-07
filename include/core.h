@@ -1,7 +1,8 @@
 #ifndef __DK_CORE_H__
 #define __DK_CORE_H__
 
-#include "sys/renderer.h"
+#include "application.h"
+#include "graph/renderer.h"
 
 namespace dk
 {
@@ -9,12 +10,12 @@ namespace dk
 class core
 {
 private:
-	static sys::renderer s_active_renderer;
+	static graph::renderer s_active_renderer;
 
 public:
 	template<typename T> static T* active() noexcept;
 
-	static status run() noexcept;
+	static status run(application* app) noexcept;
 
 	static status create() noexcept;
 };

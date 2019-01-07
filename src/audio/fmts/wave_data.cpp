@@ -57,6 +57,7 @@ status sound_data::load_wave(string_view file_path) noexcept
 			case wave_header::RIFF_chunk::id: {
 				wave_header::RIFF_chunk RIFF_chunk;
 				if (wave.read(RIFF_chunk) != sizeof(RIFF_chunk)) {
+					DK_LOG_ERROR("Failed to read RIFF chunk from WAVE file '", file_path, '\'');
 					return status::ERROR;
 				}
 
@@ -71,12 +72,24 @@ status sound_data::load_wave(string_view file_path) noexcept
 			case wave_header::fmt_chunk::id: {
 				wave_header::fmt_chunk fmt_chunk;
 				if (wave.read(fmt_chunk) != sizeof(fmt_chunk)) {
+					DK_LOG_ERROR("Failed to read fmt chunk from WAVE file '", file_path, '\'');
 					return status::ERROR;
 				}
 
-				if (chunk_header.size != 16) { /* PCM encoding format header size */
-					DK_LOG_ERROR("Unexpected fmt sub chunk size in WAVE file '", file_path, '\'');
-					return status::ERROR;
+				if (chunk_header.size != sizeof(wave_header::fmt_chunk)) { /* PCM encoding format header size */
+					if (chunk_header.size == sizeof(wave_header::fmt_chunk) + sizeof(uint16_t) /* extra param size */) {
+						uint16_t extra_param_size;
+						if (wave.read(extra_param_size) != sizeof(extra_param_size)) {
+							DK_LOG_ERROR("Failed to read fmt chunk extra param size from WAVE file '", file_path, '\'');
+							return status::ERROR;
+						}
+
+						unknown_chunk_size += extra_param_size;
+						wave.move_cursor(extra_param_size);
+					} else {
+						DK_LOG_ERROR("Unexpected fmt sub chunk size in WAVE file '", file_path, '\'');
+						return status::ERROR;
+					}
 				}
 
 				if (fmt_chunk.audio_fmt != 1) { /* PCM must be 1 - linear quantization */
@@ -109,8 +122,13 @@ status sound_data::load_wave(string_view file_path) noexcept
 		}
 	}
 
-	if (readed_size == fs::file::BAD_SIZE)
+	if (readed_size != fs::file::END_OF_FILE) {
+		if (readed_size == fs::file::BAD_SIZE)
+			return status::ERROR;
+
+		DK_LOG_ERROR("Failed to read chunk header from WAVE file '", file_path, '\'');
 		return status::ERROR;
+	}
 
 	if (RIFF_chunk_size != sizeof(wave_header::chunk_header::id) /* RIFF chunk id */
 			+ fmt_chunk_size + data_chunk_size + unknown_chunk_size) {
@@ -118,7 +136,13 @@ status sound_data::load_wave(string_view file_path) noexcept
 		return status::ERROR;
 	}
 
-	DK_LOG_OK("WAVE file '", file_path, "' loaded");
+	DK_LOG_OK(
+		"WAVE file '", file_path, "' loaded:\n"
+		"\tnum channels:    ", m_num_channels, '\n',
+		"\tsample rate:     ", m_sample_rate, '\n',
+		"\tbits per sample: ", m_bits_per_sample
+	);
+
 	return status::OK;
 }
 

@@ -16,6 +16,7 @@ namespace dk::audio
 		CASE_CODE(AL_OUT_OF_MEMORY);
 	}
 
+	DK_LOG_WARNING("OpenAL unknown error code #", code);
 	return string_view("AL_UNKNOWN_ERROR");
 }
 

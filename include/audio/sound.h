@@ -2,12 +2,12 @@
 #define __DK_AUDIO_SOUND_H__
 
 #include <AL/al.h>
-#include "audio/source_data.h"
+#include "audio/sound_data.h"
 
 namespace dk::audio
 {
 
-class sound
+class sound final: public resource
 {
 private:
 	ALuint m_id;
@@ -16,10 +16,11 @@ private:
 
 public:
 	sound() noexcept;
-	~sound() noexcept;
+	~sound() noexcept override;
 
 	ALuint id() const noexcept { return m_id; }
 
+	status create(string_view file_path, sound_data_fmt fmt = sound_data_fmt::AUTO) noexcept;
 	status create(const sound_data& data) noexcept;
 	void destroy() noexcept;
 };

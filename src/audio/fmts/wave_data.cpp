@@ -1,7 +1,7 @@
 #include "log.h"
 #include "mem.h"
 #include "fs/file.h"
-#include "audio/source_data.h"
+#include "audio/sound_data.h"
 
 namespace dk::audio
 {
@@ -43,8 +43,8 @@ status sound_data::load_wave(string_view file_path) noexcept
 {
 	//  TODO: write timer
 	fs::file wave;
-	if (auto res = wave.open(file_path); !res)
-		return res;
+	if (auto ret = wave.open(file_path); !ret)
+		return ret;
 
 	size_t readed_size;
 	size_t RIFF_chunk_size = 0;
@@ -105,9 +105,9 @@ status sound_data::load_wave(string_view file_path) noexcept
 			}
 			case wave_header::data_chunk::id: {
 				m_data = (uint8_t*)mem::alloc(chunk_header.size);
-				if (auto res = wave.read(m_data, chunk_header.size); !res) {
+				if (auto ret = wave.read(m_data, chunk_header.size); !ret) {
 					DK_LOG_ERROR("Failed to read WAVE file '", file_path, "' data");
-					return res;
+					return ret;
 				}
 
 				m_size = chunk_header.size;
@@ -117,8 +117,8 @@ status sound_data::load_wave(string_view file_path) noexcept
 			default:
 				unknown_chunk_size += chunk_header.size + sizeof(wave_header::chunk_header);
 				DK_LOG_WARNING("Unknown chunk id in WAVE file '", file_path, '\'');
-				if (auto res = wave.move_cursor(chunk_header.size); !res)
-					return res;
+				if (auto ret = wave.move_cursor(chunk_header.size); !ret)
+					return ret;
 		}
 	}
 
@@ -137,7 +137,7 @@ status sound_data::load_wave(string_view file_path) noexcept
 	}
 
 	DK_LOG_OK(
-		"WAVE file '", file_path, "' loaded:\n"
+		"Sound created from WAVE file '", file_path, "':\n"
 		"\tnum channels:    ", m_num_channels, '\n',
 		"\tsample rate:     ", m_sample_rate, '\n',
 		"\tbits per sample: ", m_bits_per_sample

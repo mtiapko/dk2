@@ -92,9 +92,12 @@ status window::create() noexcept
 		return status::ERROR;
 	}
 
-	DK_LOG_OK("Window created");
+	/* enable window close event */
+	Atom delete_msg = XInternAtom(s_display, "WM_DELETE_WINDOW", false);
+	XSetWMProtocols(s_display, m_window, &delete_msg, 1);
+
 	XStoreName(s_display, m_window, "tst | v0.0.1");
-	XSetIconName(s_display, m_window, "(icon) tst | v0.0.1");
+	XSetIconName(s_display, m_window, "(icon) tst | v0.0.1");  //  TODO: no action? remove!
 	XSelectInput(s_display, m_window, KeyPressMask | KeyReleaseMask
 		| PointerMotionMask | ButtonPressMask | ButtonReleaseMask);
 	XMapWindow(s_display, m_window);
@@ -131,12 +134,15 @@ status window::create() noexcept
 		"\tvendor:       ", glGetString(GL_VENDOR), '\n',
 		"\trenderer:     ", glGetString(GL_RENDERER), '\n',
 		"\tversion:      ", glGetString(GL_VERSION), '\n',
-		"\tGLSL version: ", (glsl_ver != nullptr ? glsl_ver : "(none)"));
+		"\tGLSL version: ", (glsl_ver != nullptr ? glsl_ver : "(none)")
+	);
 
+	//  TODO: move this to core when loading plugins
 	auto renderer = core::active<graph::renderer>();
 	if (renderer->create() != status::OK)
 		return status::ERROR;
 
+	DK_LOG_OK("Graphic window created");
 	return status::OK;
 }
 

@@ -1,7 +1,7 @@
 #ifndef __DK_AUDIO_SOUND_DATA_H__
 #define __DK_AUDIO_SOUND_DATA_H__
 
-#include "status.h"
+#include "resource.h"
 #include "containers/string_view.h"
 
 namespace dk::audio
@@ -13,7 +13,7 @@ enum class sound_data_fmt
 	WAVE
 };
 
-class sound_data
+class sound_data final: public resource
 {
 private:
 	uint8_t* m_data;
@@ -26,7 +26,7 @@ private:
 
 public:
 	sound_data() noexcept;
-	~sound_data() noexcept;
+	~sound_data() noexcept override;
 
 	const uint8_t* data() const noexcept { return m_data; }
 	size_t size() const noexcept { return m_size; }

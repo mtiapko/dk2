@@ -20,18 +20,19 @@ file::~file() noexcept
 /* static */ status file::read(string_view path, string& data) noexcept
 {
 	file file;
-	if (auto res = file.open(path); !res)
-		return res;
+	if (auto ret = file.open(path); !ret)
+		return ret;
 
 	size_t size;
-	if (auto res = file.size(size); !res)
-		return res;
+	if (auto ret = file.size(size); !ret)
+		return ret;
 
 	if (size == BAD_SIZE) {
 		DK_LOG_ERROR("File '", path, "' has undefined size");
 		return status::ERROR;
 	}
 
+	data.resize(size);
 	size = file.read(data.data(), data.size());
 	if (size == BAD_SIZE)
 		return status::ERROR;

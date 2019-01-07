@@ -8,7 +8,7 @@ sound::sound() noexcept
 	: m_id(0)
 {}
 
-sound::~sound() noexcept
+sound::~sound() noexcept /* override */
 {
 	this->destroy();
 }
@@ -32,6 +32,15 @@ sound::~sound() noexcept
 
 	DK_LOG_ERROR("Unsupported sound bits ber sample count: ", bits_per_sample);
 	return 0;
+}
+
+status sound::create(string_view file_path, sound_data_fmt fmt /* = sound_data_fmt::AUTO */) noexcept
+{
+	sound_data data;
+	if (auto ret = data.create(file_path, fmt); !ret)
+		return ret;
+
+	return this->create(data);
 }
 
 status sound::create(const sound_data& data) noexcept

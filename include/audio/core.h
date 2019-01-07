@@ -15,6 +15,7 @@ private:
 
 public:
 	static status create() noexcept;
+	static void destroy() noexcept;
 };
 
 }

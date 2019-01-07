@@ -1,25 +1,33 @@
 #include "log.h"
 #include "core.h"
-#include "audio/core.h"
-#include "audio/sound.h"
 #include "audio/source.h"
 #include "audio/listener.h"
+#include "graph/shader_program.h"
+#include "sys/events/window_close_event.h"
+#include "sys/event_listener.h"
+#include "sys/event_manager.h"
 #include "sys/keyboard.h"
 #include "sys/mouse.h"
 
 using namespace dk;
 
-class test_app : public dk::application
+class test_app : public application, sys::event_listener<sys::window_close_event>
 {
 private:
-	audio::source  m_speaker;
-	audio::sound   m_sint;
-	graph::window* m_wnd;
+	audio::source         m_speaker;
+	audio::sound          m_sint;
+	graph::window*        m_wnd;
+	graph::shader_program m_shader;
 
 public:
 	~test_app() noexcept override
 	{
 		this->destroy();
+	}
+
+	void handle(const sys::window_close_event&) noexcept override
+	{
+		core::stop();
 	}
 
 	void update(float) noexcept override
@@ -36,7 +44,7 @@ public:
 		}
 
 		if (changed)
-			DK_LOG("pitch val: ", m_speaker.pitch(), ", mouse: (", sys::mouse::x(), ", ", sys::mouse::y(), ')');
+			DK_LOG("pitch val: ", m_speaker.pitch());
 	}
 
 	void render() noexcept override
@@ -46,30 +54,36 @@ public:
 
 	status create() noexcept override
 	{
-		if (auto res = audio::core::create(); !res)
-			return res;
-
 		auto renderer = core::active<graph::renderer>();
 		m_wnd = renderer->create_window();
-		if (auto res = m_wnd->create(); !res)
-			return res;
+		if (auto ret = m_wnd->create(); !ret)
+			return ret;
 
-		if (auto res = m_speaker.create(); !res)
-			return res;
+		if (auto ret = m_speaker.create(); !ret)
+			return ret;
 
-		audio::sound_data sint_data;
-		if (auto res = sint_data.create("res/audio/atc-around_the_world.wav"); !res)
-			return res;
+		if (auto ret = m_sint.create("res/audio/sint.wav"); !ret)
+			return ret;
 
-		if (auto res = m_sint.create(sint_data); !res)
-			return res;
+		if (auto ret = m_shader.create(); !ret)
+			return ret;
+
+		if (auto ret = m_shader.add("res/shader/default_vert.glsl", graph::shader_type::VERTEX); !ret)
+			return ret;
+
+		if (auto ret = m_shader.add("res/shader/default_frag.glsl", graph::shader_type::FRAGMENT); !ret)
+			return ret;
+
+		if (auto ret = m_shader.link(); !ret)
+			return ret;
 
 		audio::listener::create();
 		m_speaker.set_gain(1.0f);
 		m_speaker.set_pitch(1.0f);
-		m_speaker.set_sound(m_sint);
+		m_speaker.set(m_sint);
 		m_speaker.play();
 
+		sys::event_manager<sys::window_close_event>::get().subscribe(this);
 		sys::mouse::record_input(true);
 		sys::keyboard::record_input(true);
 		return status::OK;
@@ -83,12 +97,17 @@ public:
 
 int main()
 {
-	if (auto res = core::create(); !res)
-		return res;
+	if (auto ret = core::create(); !ret)
+		return ret;
 
-	test_app app;
-	if (auto res = core::run(&app); !res)
-		return res;
+	{
+		test_app app;
+		if (auto ret = core::run(&app); !ret)
+			return ret;
 
+		DK_LOG_OK("Application destroyed");
+	}
+
+	core::destroy();
 	return 0;
 }

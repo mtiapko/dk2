@@ -2,8 +2,8 @@
 #define __DK_AUDIO_DEBUG_H__
 
 #include <AL/al.h>
-#include "log.h"
 #include "containers/string_view.h"
+#include "log.h"
 
 #define AL_CALL(func) \
 	func, \

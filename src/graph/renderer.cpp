@@ -16,9 +16,9 @@ window* renderer::create_window() noexcept
 status renderer::create() noexcept
 {
 	if (!s_is_init) {
-		auto res = glewInit();
-		if (res != GLEW_NO_ERROR) {
-			DK_LOG_ERROR("Failed to initialize GLEW: ", glewGetString(res), ". Note: use 'glew-wayland' from AUR");
+		auto ret = glewInit();
+		if (ret != GLEW_NO_ERROR) {
+			DK_LOG_ERROR("Failed to initialize GLEW: ", glewGetString(ret), ". Note: use 'glew-wayland' from AUR");
 			//  return status::ERROR;  TODO: use glew-wayland
 		}
 
@@ -26,6 +26,7 @@ status renderer::create() noexcept
 		DK_LOG_OK("GLEW ", glewGetString(GLEW_VERSION), " initalized");
 	}
 
+	DK_LOG_OK("Graphic renderer created");
 	return status::OK;
 }
 

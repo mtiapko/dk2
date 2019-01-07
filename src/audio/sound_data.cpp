@@ -1,7 +1,7 @@
 #include "log.h"
 #include "mem.h"
 #include "fs/file.h"
-#include "audio/source_data.h"
+#include "audio/sound_data.h"
 
 namespace dk::audio
 {
@@ -10,7 +10,7 @@ sound_data::sound_data() noexcept
 	: m_data(nullptr)
 {}
 
-sound_data::~sound_data() noexcept
+sound_data::~sound_data() noexcept /* override */
 {
 	if (m_data != nullptr)
 		mem::dealloc(m_data);

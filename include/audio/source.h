@@ -21,7 +21,7 @@ public:
 	void pause() const noexcept;
 	void stop() const noexcept;
 
-	void set_sound(const sound& snd) const noexcept;
+	void set(const sound& snd) const noexcept;
 	void remove_sound() const noexcept;
 
 	void set_pitch(float val) const noexcept;
@@ -39,6 +39,7 @@ public:
 	bool looping() const noexcept;
 
 	status create() noexcept;
+	void destroy() noexcept;
 };
 
 }

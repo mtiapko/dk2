@@ -10,8 +10,7 @@ source::source() noexcept
 
 source::~source() noexcept
 {
-	if (m_id != 0)
-		AL_CALL(alDeleteSources(1, &m_id));
+	this->destroy();
 }
 
 void source::play() const noexcept
@@ -29,7 +28,7 @@ void source::stop() const noexcept
 	AL_CALL(alSourceStop(m_id));
 }
 
-void source::set_sound(const sound& snd) const noexcept
+void source::set(const sound& snd) const noexcept
 {
 	AL_CALL(alSourcei(m_id, AL_BUFFER, snd.id()));
 }
@@ -123,6 +122,14 @@ status source::create() noexcept
 	this->set_looping(false);
 
 	return status::OK;
+}
+
+void source::destroy() noexcept
+{
+	if (m_id != 0) {
+		AL_CALL(alDeleteSources(1, &m_id));
+		m_id = 0;
+	}
 }
 
 }

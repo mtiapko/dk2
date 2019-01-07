@@ -1,24 +1,30 @@
 #include "log.h"
 #include "core.h"
 #include "sys/input.h"
+#include "audio/core.h"
 #include "util/ticker.h"
 
 namespace dk
 {
 
+/* static */ bool            core::s_running;
 /* static */ graph::renderer core::s_active_renderer;
 
-template<> graph::renderer* core::active<graph::renderer>() noexcept { return &s_active_renderer; }
+template<> /* static */ graph::renderer* core::active<graph::renderer>() noexcept { return &s_active_renderer; }
 
-status core::run(application* app) noexcept
+/* static */ status core::run(application* app) noexcept
 {
-	if (auto res = app->create(); !res)
-		return res;
+	if (auto ret = app->create(); !ret)
+		return ret;
 
 	size_t count = 0;
 	auto avr = std::chrono::microseconds::zero();
+	auto next_time = std::chrono::high_resolution_clock::now() + std::chrono::seconds(1);
 	util::ticker clk(30);
-	while (true) {
+
+	s_running = true;
+	DK_LOG("Enter core loop");
+	while (s_running) {
 		auto beg = std::chrono::high_resolution_clock::now();
 
 		sys::input::update();
@@ -30,24 +36,46 @@ status core::run(application* app) noexcept
 		avr += diff;
 		++count;
 
-		DK_LOG("Frame time: ", diff.count() / 1000.0f, " ms, avr: ", avr.count() / 1000.0f / count, " ms");
+		if (end >= next_time) {
+			auto elapsed_time = std::chrono::duration_cast<std::chrono::microseconds>((end - next_time + std::chrono::seconds(1)));
+			DK_LOG("FPS: ", count, " per ", elapsed_time.count() / 1000.0f, " ms, avr: ", avr.count() / 1000.0f / count, " ms");
+			next_time = beg + std::chrono::seconds(1);
+			avr = std::chrono::microseconds::zero();
+			count = 0;
+		}
+
 		clk.wait();
 	}
 
-	app->destroy();
 	DK_LOG("Exit from core loop");
+	app->destroy();
 	return status::OK;
 }
 
-status core::create() noexcept
+/* static */ void core::stop() noexcept
 {
-	if (auto res = log::create(); !res)
-		return res;
+	s_running = false;
+}
 
-	if (auto res = sys::input::create(); !res)
-		return res;
+/* static */ status core::create() noexcept
+{
+	if (auto ret = log::create(); !ret)
+		return ret;
 
+	if (auto ret = audio::core::create(); !ret)
+		return ret;
+
+	if (auto ret = sys::input::create(); !ret)
+		return ret;
+
+	DK_LOG_OK("Engine core created");
 	return status::OK;
+}
+
+/* static */ void core::destroy() noexcept
+{
+	audio::core::destroy();
+	DK_LOG_OK("Engine core destroyed");
 }
 
 }

@@ -1,5 +1,5 @@
-#ifndef __DK_STORAGE_STRING_H__
-#define __DK_STORAGE_STRING_H__
+#ifndef __DK_STRING_H__
+#define __DK_STRING_H__
 
 #include <string>
 
@@ -10,4 +10,4 @@ using string = std::string;
 
 }
 
-#endif  //  !__DK_STORAGE_STRING_H__
+#endif  //  !__DK_STRING_H__

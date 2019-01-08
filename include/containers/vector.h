@@ -1,5 +1,5 @@
-#ifndef __DK_STORAGE_VECTOR_H__
-#define __DK_STORAGE_VECTOR_H__
+#ifndef __DK_VECTOR_H__
+#define __DK_VECTOR_H__
 
 #include <vector>
 
@@ -10,4 +10,4 @@ template<typename T> using vector = std::vector<T>;
 
 }
 
-#endif  //  !__DK_STORAGE_VECTOR_H__
+#endif  //  !__DK_VECTOR_H__

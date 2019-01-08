@@ -104,7 +104,7 @@ status sound_data::load_wave(string_view file_path) noexcept
 				break;
 			}
 			case wave_header::data_chunk::id: {
-				m_data = (uint8_t*)mem::alloc(chunk_header.size);
+				m_data = (uint8_t*)mem_alloc(chunk_header.size);
 				if (auto ret = wave.read(m_data, chunk_header.size); !ret) {
 					DK_LOG_ERROR("Failed to read WAVE file '", file_path, "' data");
 					return ret;

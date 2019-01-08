@@ -16,6 +16,8 @@ enum class sound_data_fmt
 class sound_data final: public resource
 {
 private:
+	friend class resource_manager;
+
 	uint8_t* m_data;
 	size_t   m_size;
 	uint32_t m_num_channels;

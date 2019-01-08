@@ -40,7 +40,7 @@ namespace dk::audio
 		"\tdevice:  ", alcGetString(s_device, ALC_DEVICE_SPECIFIER), '\n',
 		"\tcapture: ", alcGetString(s_device, ALC_CAPTURE_DEVICE_SPECIFIER), '\n',
 		"\tvendor:  ", alGetString(AL_VENDOR), '\n',
-		"\tversion: ", alGetString(AL_VERSION), '\n'
+		"\tversion: ", alGetString(AL_VERSION)
 	);
 
 	return status::OK;

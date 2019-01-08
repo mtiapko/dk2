@@ -80,8 +80,8 @@ public:
 		audio::listener::create();
 		m_speaker.set_gain(1.0f);
 		m_speaker.set_pitch(1.0f);
-		m_speaker.set(m_sint);
-		m_speaker.play();
+		//m_speaker.set(m_sint);
+		//m_speaker.play();
 
 		sys::event_manager<sys::window_close_event>::get().subscribe(this);
 		sys::mouse::record_input(true);

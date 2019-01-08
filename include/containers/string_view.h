@@ -1,5 +1,5 @@
-#ifndef __DK_STORAGE_STRING_VIEW_H__
-#define __DK_STORAGE_STRING_VIEW_H__
+#ifndef __DK_STRING_VIEW_H__
+#define __DK_STRING_VIEW_H__
 
 #include <string_view>
 
@@ -10,4 +10,4 @@ using string_view = std::string_view;
 
 }
 
-#endif  //  !__DK_STORAGE_STRING_VIEW_H__
+#endif  //  !__DK_STRING_VIEW_H__

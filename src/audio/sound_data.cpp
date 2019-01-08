@@ -12,8 +12,8 @@ sound_data::sound_data() noexcept
 
 sound_data::~sound_data() noexcept /* override */
 {
-	if (m_data != nullptr)
-		mem::dealloc(m_data);
+	mem_destroy(m_data);
+	m_data = nullptr;
 }
 
 status sound_data::create(string_view file_path, sound_data_fmt fmt /* = sound_data_fmt::AUTO */) noexcept

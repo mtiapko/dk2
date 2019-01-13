@@ -3,9 +3,18 @@
 #include "sys/input.h"
 #include "audio/core.h"
 #include "util/ticker.h"
+#include "sys/resource_manager.h"
+#include "sys/loaders/wave_loader.h"
 
 namespace dk
 {
+
+namespace
+{
+
+sys::wave_loader wave_loader;
+
+}
 
 /* static */ bool            core::s_running;
 /* static */ graph::renderer core::s_active_renderer;
@@ -67,6 +76,9 @@ template<> /* static */ graph::renderer* core::active<graph::renderer>() noexcep
 
 	if (auto ret = sys::input::create(); !ret)
 		return ret;
+
+	/* std loaders */
+	sys::resource_manager::add(&wave_loader, "wav");
 
 	DK_LOG_OK("Engine core created");
 	return status::OK;

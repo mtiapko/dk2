@@ -34,15 +34,6 @@ sound::~sound() noexcept /* override */
 	return 0;
 }
 
-status sound::create(string_view file_path, sound_data_fmt fmt /* = sound_data_fmt::AUTO */) noexcept
-{
-	sound_data data;
-	if (auto ret = data.create(file_path, fmt); !ret)
-		return ret;
-
-	return this->create(data);
-}
-
 status sound::create(const sound_data& data) noexcept
 {
 	AL_CALL(alGenBuffers(1, &m_id));

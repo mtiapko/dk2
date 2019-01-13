@@ -18,9 +18,10 @@ public:
 	sound() noexcept;
 	~sound() noexcept override;
 
+	resource_type type() const noexcept override { return resource_type::SOUND; }
+
 	ALuint id() const noexcept { return m_id; }
 
-	status create(string_view file_path, sound_data_fmt fmt = sound_data_fmt::AUTO) noexcept;
 	status create(const sound_data& data) noexcept;
 	void destroy() noexcept;
 };

@@ -8,7 +8,7 @@ CC_DEFINES :=
 LD_FLAGS :=
 LD_LIBS := -lEGL -lX11 -lGLEW -lGL -lopenal -lsoil2
 
-SRC_DIR := src src/fs src/sys src/util src/allocs src/graph src/audio src/audio/fmts src/math
+SRC_DIR := src src/fs src/sys src/sys/loaders src/util src/allocs src/graph src/audio src/math
 OBJ_DIR := obj
 
 SRC := $(wildcard $(addsuffix /*.cpp, $(SRC_DIR)))

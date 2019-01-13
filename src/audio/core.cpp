@@ -35,13 +35,17 @@ namespace dk::audio
 		return status::ERROR;
 	}
 
-	DK_LOG_OK(
-		"Audio core create:\n",
-		"\tdevice:  ", alcGetString(s_device, ALC_DEVICE_SPECIFIER), '\n',
-		"\tcapture: ", alcGetString(s_device, ALC_CAPTURE_DEVICE_SPECIFIER), '\n',
-		"\tvendor:  ", alGetString(AL_VENDOR), '\n',
-		"\tversion: ", alGetString(AL_VERSION)
-	);
+	if (alcIsExtensionPresent(nullptr, "ALC_ENUMERATION_EXT") == AL_TRUE) {
+		DK_LOG_OK(
+			"Audio core created:\n",
+			"\tdevice:  ", alcGetString(s_device, ALC_DEVICE_SPECIFIER), '\n',
+			"\tcapture: ", alcGetString(s_device, ALC_CAPTURE_DEVICE_SPECIFIER), '\n',
+			"\tvendor:  ", alGetString(AL_VENDOR), '\n',
+			"\tversion: ", alGetString(AL_VERSION)
+		);
+	} else {
+		DK_LOG_OK("Audio core created with unknown default device");
+	}
 
 	return status::OK;
 }

@@ -6,12 +6,13 @@
 namespace dk::graph
 {
 
-class shader_program : public resource
+class shader_program final: public resource
 {
 private:
 	GLuint m_id;
 
 public:
+	shader_program() noexcept;
 	~shader_program() noexcept override;
 
 	void enable() const noexcept;

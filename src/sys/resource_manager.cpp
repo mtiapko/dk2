@@ -1,59 +1,50 @@
-#include "mem.h"
-#include "assert.h"
 #include "sys/resource_manager.h"
+#include "containers/string.h"
+#include "log.h"
 
 namespace dk::sys
 {
 
-resource_manager::~resource_manager() noexcept
-{
-	this->destroy_all();
-}
+/* static */ hash_table<string_view, resource_loader*> resource_manager::s_loaders;
 
-bool resource_manager::is_exists(const resource* res) const noexcept
+/* static */ resource* resource_manager::load(string_view file_path, resource_type type) noexcept
 {
-	for (auto r: m_resources) {
-		if (r == res)
-			return true;
+	auto ld = s_loaders.find(mime(file_path));
+	if (ld == s_loaders.cend()) {
+		DK_LOG_ERROR("Loader for file '", file_path, "' does not exist");
+		return nullptr;
 	}
 
-	return false;
+	return ld->second->load(file_path, type);
 }
 
-void resource_manager::add(resource* res) noexcept
+/* static */ string_view resource_manager::mime(string_view file_path) noexcept
 {
-	DK_ASSERT(!this->is_exists(res));
-	m_resources.emplace_back(res);
+	auto dot_pos = file_path.rfind('.');
+	if (dot_pos == string::npos)
+		return {};
+
+	++dot_pos;
+	return { &file_path[dot_pos], file_path.size() - dot_pos };
 }
 
-void resource_manager::remove(resource* res) noexcept
+/* static */ resource_loader* resource_manager::loader(string_view mime) noexcept
 {
-	for (auto it = m_resources.cbegin(); it != m_resources.cend(); ++it) {
-		if (*it == res) {
-			m_resources.erase(it);
-			break;
-		}
-	}
+	auto ld = s_loaders.find(mime);
+	if (ld != s_loaders.cend())
+		return ld->second;
+
+	return nullptr;
 }
 
-void resource_manager::remove_all() noexcept
+/* static */ void resource_manager::add(resource_loader* loader, string_view mime) noexcept
 {
-	m_resources.clear();
+	s_loaders[mime] = loader;
 }
 
-void resource_manager::destroy(resource* res) noexcept
+/* static */ void resource_manager::remove(string_view mime) noexcept
 {
-	for (auto it = m_resources.cbegin(); it != m_resources.cend(); ++it) {
-		if (*it == res) {
-			m_resources.erase(it);
-			mem_destroy(res);
-			break;
-		}
-	}
-}
-
-void resource_manager::destroy_all() noexcept
-{
+	s_loaders.erase(mime);
 }
 
 }

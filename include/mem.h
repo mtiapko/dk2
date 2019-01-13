@@ -8,7 +8,7 @@
 #define mem_dealloc(ptr)       mem::dealloc(__FILE__, __func__, __LINE__, ptr)
 #define mem_realloc(ptr, size) mem::realloc(__FILE__, __func__, __LINE__, ptr, size)
 
-#define mem_create(T, ...) mem::create<T>(__FILE__, __func__, __LINE__, __VA_ARGS__)
+#define mem_create(T, ...) mem::create<T>(__FILE__, __func__, __LINE__ __VA_OPT__(,) __VA_ARGS__)
 #define mem_destroy(ptr)   mem::destroy(__FILE__, __func__, __LINE__, ptr)
 
 namespace dk

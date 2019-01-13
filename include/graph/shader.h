@@ -25,6 +25,8 @@ public:
 	shader() noexcept;
 	~shader() noexcept override;
 
+	resource_type type() const noexcept override { return resource_type::SHADER; }
+
 	GLuint id() const noexcept { return m_id; }
 
 	status create(string_view file_path, shader_type type) noexcept;

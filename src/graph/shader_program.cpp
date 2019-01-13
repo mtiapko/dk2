@@ -5,6 +5,10 @@
 namespace dk::graph
 {
 
+shader_program::shader_program() noexcept
+	: m_id(0)
+{}
+
 shader_program::~shader_program() noexcept /* override */
 {
 	this->destroy();

@@ -9,14 +9,10 @@ namespace dk::sys
 
 class resource_loader
 {
-private:
-	static hash_table<string, > s_loaders;
-
 public:
-	static resource_type get_type(string_view file_path) noexcept;
-	static resource* load(string_view file_path, resource_type type = resource_type::AUTO) noexcept;
+	virtual ~resource_loader() noexcept = default;
 
-	static status load(string_view file_path, audio::sound_data& data) noexcept;
+	virtual resource* load(string_view file_path, resource_type type) noexcept = 0;
 };
 
 }

@@ -1,29 +1,29 @@
+#include "audio/sound_data.h"
+#include "fs/file.h"
 #include "log.h"
 #include "mem.h"
-#include "fs/file.h"
-#include "audio/sound_data.h"
 
 namespace dk::audio
 {
 
 sound_data::sound_data() noexcept
 	: m_data(nullptr)
+	, m_size(0)
+	, m_num_channels(0)
+	, m_sample_rate(0)
+	, m_bits_per_sample(0)
 {}
 
 sound_data::~sound_data() noexcept /* override */
 {
-	mem_destroy(m_data);
-	m_data = nullptr;
+	this->destroy();
 }
 
-status sound_data::create(string_view file_path, sound_data_fmt fmt /* = sound_data_fmt::AUTO */) noexcept
+void sound_data::destroy() noexcept
 {
-	fmt = sound_data_fmt::WAVE;  //  TODO: you know what to do...
-	switch (fmt) {
-		case sound_data_fmt::WAVE: return this->load_wave(file_path);
-		default:
-			DK_LOG_ERROR("Unexpected sound data format");
-			return status::ERROR;
+	if (m_data != nullptr) {
+		mem_destroy(m_data);
+		m_data = nullptr;
 	}
 }
 

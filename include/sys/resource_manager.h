@@ -1,30 +1,32 @@
 #ifndef __DK_SYS_RESOURCE_MANAGER_H__
 #define __DK_SYS_RESOURCE_MANAGER_H__
 
-#include "resource.h"
-#include "containers/vector.h"
+#include "sys/resource_loader.h"
+#include "containers/hash_table.h"
+#include "containers/pair.h"
 
 namespace dk::sys
 {
 
 class resource_manager
 {
-public:
-	vector<resource*> m_resources;
+private:
+	static hash_table<string_view, resource_loader*> s_loaders;
 
 public:
-	resource_manager() noexcept = default;
-	~resource_manager() noexcept;
+	template<typename T>
+	static T* load(string_view file_path) noexcept
+	{
+		return static_cast<T*>(load(file_path, T{}.type()));
+	}
 
-	bool is_exists(const resource* res) const noexcept;
+	static resource* load(string_view file_path, resource_type type) noexcept;
 
-	void add(resource* res) noexcept;
+	static string_view mime(string_view file_path) noexcept;
+	static resource_loader* loader(string_view mime) noexcept;
 
-	void remove(resource* res) noexcept;
-	void remove_all() noexcept;
-
-	void destroy(resource* res) noexcept;
-	void destroy_all() noexcept;
+	static void add(resource_loader* loader, string_view mime) noexcept;
+	static void remove(string_view mime) noexcept;
 };
 
 }

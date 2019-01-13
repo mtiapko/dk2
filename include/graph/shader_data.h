@@ -18,6 +18,8 @@ public:
 	shader_data() noexcept = default;
 	~shader_data() noexcept override = default;
 
+	resource_type type() const noexcept override { return resource_type::SHADER_DATA; }
+
 	const string& data() const noexcept { return m_data; }
 	string_view file_path() const noexcept { return m_file_path; }
 

@@ -1,6 +1,7 @@
 #ifndef __DK_SYS_RESOURCE_LOADER_H__
 #define __DK_SYS_RESOURCE_LOADER_H__
 
+#include "status.h"
 #include "resource.h"
 #include "containers/string_view.h"
 
@@ -13,6 +14,7 @@ public:
 	virtual ~resource_loader() noexcept = default;
 
 	virtual resource* load(string_view file_path, resource_type type) noexcept = 0;
+	virtual status    load(resource& res, string_view file_path, resource_type type) noexcept = 0;
 };
 
 }

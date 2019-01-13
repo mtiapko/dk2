@@ -19,6 +19,7 @@ public:
 
 	void play() const noexcept;
 	void pause() const noexcept;
+	void rewind() const noexcept;
 	void stop() const noexcept;
 
 	void set(const sound& snd) const noexcept;

@@ -18,6 +18,17 @@ namespace dk::sys
 	return ld->second->load(file_path, type);
 }
 
+/* static */ status resource_manager::load(resource& res, string_view file_path, resource_type type) noexcept
+{
+	auto ld = s_loaders.find(mime(file_path));
+	if (ld == s_loaders.cend()) {
+		DK_LOG_ERROR("Loader for file '", file_path, "' does not exist");
+		return status::ERROR;
+	}
+
+	return ld->second->load(res, file_path, type);
+}
+
 /* static */ string_view resource_manager::mime(string_view file_path) noexcept
 {
 	auto dot_pos = file_path.rfind('.');

@@ -23,7 +23,7 @@ class resource
 public:
 	virtual ~resource() noexcept = default;
 
-	virtual resource_type type() const noexcept { return resource_type::UNKNOWN; }
+	static resource_type type() noexcept { return resource_type::UNKNOWN; }
 };
 
 }

@@ -23,6 +23,12 @@ void source::pause() const noexcept
 	AL_CALL(alSourcePause(m_id));
 }
 
+void source::rewind() const noexcept
+{
+	AL_CALL(alSourceRewind(m_id));
+	this->play();
+}
+
 void source::stop() const noexcept
 {
 	AL_CALL(alSourceStop(m_id));

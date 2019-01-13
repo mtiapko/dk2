@@ -1,9 +1,9 @@
 #ifndef __DK_AUDIO_SOUND_DATA_H__
 #define __DK_AUDIO_SOUND_DATA_H__
 
-#include "status.h"
+#include <stdint.h>
+#include <stddef.h>
 #include "resource.h"
-#include "containers/string_view.h"
 
 namespace dk::audio
 {
@@ -21,7 +21,7 @@ public:
 	sound_data() noexcept;
 	~sound_data() noexcept override;
 
-	resource_type type() const noexcept override { return resource_type::SOUND_DATA; }
+	static resource_type type() noexcept { return resource_type::SOUND_DATA; }
 
 	uint8_t* data() const noexcept { return m_data; }
 	size_t size() const noexcept { return m_size; }

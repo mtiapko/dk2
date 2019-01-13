@@ -5,6 +5,7 @@
 #include "util/ticker.h"
 #include "sys/resource_manager.h"
 #include "sys/loaders/wave_loader.h"
+#include "sys/loaders/texture_loader.h"
 
 namespace dk
 {
@@ -12,7 +13,8 @@ namespace dk
 namespace
 {
 
-sys::wave_loader wave_loader;
+sys::wave_loader    wave_loader;
+sys::texture_loader texture_loader;
 
 }
 
@@ -79,6 +81,10 @@ template<> /* static */ graph::renderer* core::active<graph::renderer>() noexcep
 
 	/* std loaders */
 	sys::resource_manager::add(&wave_loader, "wav");
+	sys::resource_manager::add(&texture_loader, "png");
+	sys::resource_manager::add(&texture_loader, "bmp");
+	sys::resource_manager::add(&texture_loader, "jpg");
+	sys::resource_manager::add(&texture_loader, "tga");
 
 	DK_LOG_OK("Engine core created");
 	return status::OK;

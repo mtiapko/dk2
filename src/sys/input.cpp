@@ -70,6 +70,38 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(56)]  = keyboard_btn::L_ALT;
 	keyboard_btn_map[KEY(100)] = keyboard_btn::R_ALT;
 
+	/* top row */
+	keyboard_btn_map[KEY(16)] = keyboard_btn::Q;
+	keyboard_btn_map[KEY(17)] = keyboard_btn::W;
+	keyboard_btn_map[KEY(18)] = keyboard_btn::E;
+	keyboard_btn_map[KEY(19)] = keyboard_btn::R;
+	keyboard_btn_map[KEY(20)] = keyboard_btn::T;
+	keyboard_btn_map[KEY(21)] = keyboard_btn::Y;
+	keyboard_btn_map[KEY(22)] = keyboard_btn::U;
+	keyboard_btn_map[KEY(23)] = keyboard_btn::I;
+	keyboard_btn_map[KEY(24)] = keyboard_btn::O;
+	keyboard_btn_map[KEY(25)] = keyboard_btn::P;
+
+	/* middle row */
+	keyboard_btn_map[KEY(30)] = keyboard_btn::A;
+	keyboard_btn_map[KEY(31)] = keyboard_btn::S;
+	keyboard_btn_map[KEY(32)] = keyboard_btn::D;
+	keyboard_btn_map[KEY(33)] = keyboard_btn::F;
+	keyboard_btn_map[KEY(34)] = keyboard_btn::G;
+	keyboard_btn_map[KEY(35)] = keyboard_btn::H;
+	keyboard_btn_map[KEY(36)] = keyboard_btn::J;
+	keyboard_btn_map[KEY(37)] = keyboard_btn::K;
+	keyboard_btn_map[KEY(38)] = keyboard_btn::L;
+
+	/* bottom row */
+	keyboard_btn_map[KEY(44)] = keyboard_btn::Z;
+	keyboard_btn_map[KEY(45)] = keyboard_btn::X;
+	keyboard_btn_map[KEY(46)] = keyboard_btn::C;
+	keyboard_btn_map[KEY(47)] = keyboard_btn::V;
+	keyboard_btn_map[KEY(48)] = keyboard_btn::B;
+	keyboard_btn_map[KEY(49)] = keyboard_btn::N;
+	keyboard_btn_map[KEY(50)] = keyboard_btn::M;
+
 	DK_LOG_OK("Input system created");
 	return status::OK;
 }

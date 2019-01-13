@@ -3,7 +3,6 @@
 
 #include "sys/resource_loader.h"
 #include "containers/hash_table.h"
-#include "containers/pair.h"
 
 namespace dk::sys
 {
@@ -15,12 +14,19 @@ private:
 
 public:
 	template<typename T>
-	static T* load(string_view file_path) noexcept
+	static T* load(string_view file_path /* , resource_type type = T::type() */) noexcept
 	{
-		return static_cast<T*>(load(file_path, T{}.type()));
+		return static_cast<T*>(load(file_path, T::type()));
+	}
+
+	template<typename T>
+	static status load(T& t, string_view file_path /* , resource_type type = T::type() */) noexcept
+	{
+		return load(static_cast<resource&>(t), file_path, T::type());
 	}
 
 	static resource* load(string_view file_path, resource_type type) noexcept;
+	static status load(resource& res, string_view file_path, resource_type type) noexcept;
 
 	static string_view mime(string_view file_path) noexcept;
 	static resource_loader* loader(string_view mime) noexcept;

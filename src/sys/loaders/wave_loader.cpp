@@ -1,5 +1,4 @@
 #include "sys/loaders/wave_loader.h"
-#include "audio/sound.h"
 #include "fs/file.h"
 #include "mem.h"
 #include "log.h"
@@ -7,7 +6,7 @@
 namespace dk::sys
 {
 
-status wave_loader::load(string_view file_path, audio::sound_data& res) noexcept
+status wave_loader::load(audio::sound_data& res, string_view file_path) noexcept
 {
 	//  TODO: write timer
 	fs::file wave;
@@ -175,23 +174,28 @@ status wave_loader::load(string_view file_path, audio::sound_data& res) noexcept
 	return status::OK;
 }
 
+status wave_loader::load(audio::sound& res, string_view file_path) noexcept
+{
+	audio::sound_data sound_data;
+	if (auto ret = load(sound_data, file_path); !ret)
+		return ret;
+
+	return res.create(sound_data);
+}
+
 resource* wave_loader::load(string_view file_path, resource_type type) noexcept /* override */
 {
 	if (type == resource_type::SOUND_DATA) {
-		audio::sound_data* sound = mem_create(audio::sound_data);
-		if (!load(file_path, *sound)) {
-			mem_destroy(sound);
+		audio::sound_data* sound_data = mem_create(audio::sound_data);
+		if (!load(*sound_data, file_path)) {
+			mem_destroy(sound_data);
 			return nullptr;
 		}
 
-		return sound;
+		return sound_data;
 	} else if (type == resource_type::SOUND) {
-		audio::sound_data sound_data;
-		if (!load(file_path, sound_data))
-			return nullptr;
-
 		audio::sound* sound = mem_create(audio::sound);
-		if (!sound->create(sound_data)) {
+		if (!load(*sound, file_path)) {
 			mem_destroy(sound);
 			return nullptr;
 		}
@@ -199,7 +203,17 @@ resource* wave_loader::load(string_view file_path, resource_type type) noexcept 
 		return sound;
 	}
 
+	DK_LOG_ERROR("WAVE loader does not support this resource type: #", (uint32_t)type);
 	return nullptr;
+}
+
+status wave_loader::load(resource& res, string_view file_path, resource_type type) noexcept /* override */
+{
+	if (type == resource_type::SOUND_DATA) return load(static_cast<audio::sound_data&>(res), file_path);
+	else if (type == resource_type::SOUND) return load(static_cast<audio::sound&>(res), file_path);
+
+	DK_LOG_ERROR("WAVE loader does not support this resource type: #", (uint32_t)type);
+	return status::ERROR;
 }
 
 }

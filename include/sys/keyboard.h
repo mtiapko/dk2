@@ -26,6 +26,10 @@ enum class keyboard_btn
 	L_ALT,
 	R_ALT,
 
+	/* top row    */ Q, W, E, R, T, Y, U, I, O, P,
+	/* middle row */  A, S, D, F, G, H, J, K, L,
+	/* bottom row */   Z, X, C, V, B, N, M,
+
 	ENUM_SIZE
 };
 

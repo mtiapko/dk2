@@ -1,6 +1,7 @@
 #ifndef __DK_GRAPH_SHADER_DATA_H__
 #define __DK_GRAPH_SHADER_DATA_H__
 
+#include "status.h"
 #include "resource.h"
 #include "containers/string.h"
 #include "containers/string_view.h"
@@ -18,7 +19,7 @@ public:
 	shader_data() noexcept = default;
 	~shader_data() noexcept override = default;
 
-	resource_type type() const noexcept override { return resource_type::SHADER_DATA; }
+	static resource_type type() noexcept { return resource_type::SHADER_DATA; }
 
 	const string& data() const noexcept { return m_data; }
 	string_view file_path() const noexcept { return m_file_path; }

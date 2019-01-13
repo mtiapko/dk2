@@ -1,6 +1,4 @@
 #include "audio/sound_data.h"
-#include "fs/file.h"
-#include "log.h"
 #include "mem.h"
 
 namespace dk::audio
@@ -22,7 +20,7 @@ sound_data::~sound_data() noexcept /* override */
 void sound_data::destroy() noexcept
 {
 	if (m_data != nullptr) {
-		mem_destroy(m_data);
+		mem_dealloc(m_data);
 		m_data = nullptr;
 	}
 }

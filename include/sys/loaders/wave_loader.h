@@ -1,7 +1,7 @@
 #ifndef __DK_SYS_WAVE_DATA_LOADER_H__
 #define __DK_SYS_WAVE_DATA_LOADER_H__
 
-#include "audio/sound_data.h"
+#include "audio/sound.h"
 #include "sys/resource_loader.h"
 
 #define WAVE_CHUNK_ID(id) (id[0] + (id[1] << 8) + (id[2] << 16) + (id[3] << 24))
@@ -68,9 +68,11 @@ struct wave_header
 class wave_loader final: public resource_loader
 {
 public:
-	status load(string_view file_path, audio::sound_data& res) noexcept;
+	status load(audio::sound_data& res, string_view file_path) noexcept;
+	status load(audio::sound& res, string_view file_path) noexcept;
 
 	resource* load(string_view file_path, resource_type type) noexcept override;
+	status    load(resource& res, string_view file_path, resource_type type) noexcept override;
 };
 
 }

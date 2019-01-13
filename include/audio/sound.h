@@ -2,6 +2,7 @@
 #define __DK_AUDIO_SOUND_H__
 
 #include <AL/al.h>
+#include "status.h"
 #include "audio/sound_data.h"
 
 namespace dk::audio
@@ -18,7 +19,7 @@ public:
 	sound() noexcept;
 	~sound() noexcept override;
 
-	resource_type type() const noexcept override { return resource_type::SOUND; }
+	static resource_type type() noexcept { return resource_type::SOUND; }
 
 	ALuint id() const noexcept { return m_id; }
 

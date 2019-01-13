@@ -2,6 +2,7 @@
 #include "core.h"
 #include "audio/source.h"
 #include "audio/listener.h"
+#include "graph/texture.h"
 #include "graph/shader_program.h"
 #include "sys/resource_manager.h"
 #include "sys/events/window_close_event.h"
@@ -16,9 +17,11 @@ class test_app final: public application, sys::event_listener<sys::window_close_
 {
 private:
 	audio::source         m_speaker;
-	audio::sound*         m_sint;
+	audio::sound          m_sint;
+	audio::sound*         m_sint_2;
 	graph::window*        m_wnd;
 	graph::shader_program m_shader;
+	graph::texture        m_texture;
 
 public:
 	~test_app() noexcept override
@@ -44,6 +47,22 @@ public:
 			changed = true;
 		}
 
+		if (sys::keyboard::state(sys::keyboard_btn::A)) {
+			m_speaker.stop();
+			m_speaker.set(*m_sint_2);
+			m_speaker.play();
+		} else if (sys::keyboard::state(sys::keyboard_btn::D)) {
+			m_speaker.stop();
+			m_speaker.set(m_sint);
+			m_speaker.play();
+		}
+
+		if (sys::keyboard::state(sys::keyboard_btn::R))
+			m_speaker.rewind();
+
+		if (sys::keyboard::state(sys::keyboard_btn::ESCAPE))
+			core::stop();
+
 		if (changed)
 			DK_LOG("pitch val: ", m_speaker.pitch());
 	}
@@ -63,8 +82,14 @@ public:
 		if (auto ret = m_speaker.create(); !ret)
 			return ret;
 
-		if ((m_sint = sys::resource_manager::load<audio::sound>("res/audio/sint.wav")) == nullptr)
+		if (auto ret = sys::resource_manager::load(m_sint, "res/audio/sint.wav"); !ret)
+			return ret;
+
+		if ((m_sint_2 = sys::resource_manager::load<audio::sound>("res/audio/Omnia & IRA - The Fusion.wav")) == nullptr)
 			return status::ERROR;
+
+		if (auto ret = sys::resource_manager::load(m_texture, "res/tex/stallTexture.png"); !ret)
+			return ret;
 
 		if (auto ret = m_shader.create(); !ret)
 			return ret;
@@ -81,7 +106,7 @@ public:
 		audio::listener::create();
 		m_speaker.set_gain(1.0f);
 		m_speaker.set_pitch(1.0f);
-		m_speaker.set(*m_sint);
+		m_speaker.set(*m_sint_2);
 		m_speaker.play();
 
 		sys::event_manager<sys::window_close_event>::get().subscribe(this);

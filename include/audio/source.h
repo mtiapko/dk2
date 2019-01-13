@@ -22,6 +22,12 @@ public:
 	void rewind() const noexcept;
 	void stop() const noexcept;
 
+	float sec_offset() const noexcept;
+	int32_t byte_offset() const noexcept;
+
+	void set_sec_offset(float val) const noexcept;
+	void set_byte_offset(int32_t val) const noexcept;
+
 	void set(const sound& snd) const noexcept;
 	void remove_sound() const noexcept;
 

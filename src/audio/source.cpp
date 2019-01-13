@@ -34,6 +34,30 @@ void source::stop() const noexcept
 	AL_CALL(alSourceStop(m_id));
 }
 
+float source::sec_offset() const noexcept
+{
+	float val;
+	AL_CALL(alGetSourcef(m_id, AL_SEC_OFFSET, &val));
+	return val;
+}
+
+int32_t source::byte_offset() const noexcept
+{
+	int32_t val;
+	AL_CALL(alGetSourcei(m_id, AL_BYTE_OFFSET, &val));
+	return val;
+}
+
+void source::set_sec_offset(float val) const noexcept
+{
+	AL_CALL(alSourcef(m_id, AL_SEC_OFFSET, val));
+}
+
+void source::set_byte_offset(int32_t val) const noexcept
+{
+	AL_CALL(alSourcei(m_id, AL_BYTE_OFFSET, val));
+}
+
 void source::set(const sound& snd) const noexcept
 {
 	AL_CALL(alSourcei(m_id, AL_BUFFER, snd.id()));

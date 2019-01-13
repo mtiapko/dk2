@@ -1,3 +1,4 @@
+#include <GL/glew.h>
 #include "log.h"
 #include "core.h"
 #include "audio/source.h"
@@ -57,6 +58,14 @@ public:
 			m_speaker.play();
 		}
 
+		if (sys::keyboard::state(sys::keyboard_btn::W)) {
+			m_speaker.set_sec_offset(m_speaker.sec_offset() + 10.0f);
+			DK_LOG("track time: ", m_speaker.sec_offset(), "s (+10s)");
+		} else if (sys::keyboard::state(sys::keyboard_btn::S)) {
+			m_speaker.set_sec_offset(m_speaker.sec_offset() - 10.0f);
+			DK_LOG("track time: ", m_speaker.sec_offset(), "s (-10s)");
+		}
+
 		if (sys::keyboard::state(sys::keyboard_btn::R))
 			m_speaker.rewind();
 
@@ -94,10 +103,10 @@ public:
 		if (auto ret = m_shader.create(); !ret)
 			return ret;
 
-		if (auto ret = m_shader.add("res/shader/default_vert.glsl", graph::shader_type::VERTEX); !ret)
+		if (auto ret = m_shader.add("res/shader/vert.glsl", graph::shader_type::VERTEX); !ret)
 			return ret;
 
-		if (auto ret = m_shader.add("res/shader/default_frag.glsl", graph::shader_type::FRAGMENT); !ret)
+		if (auto ret = m_shader.add("res/shader/frag.glsl", graph::shader_type::FRAGMENT); !ret)
 			return ret;
 
 		if (auto ret = m_shader.link(); !ret)
@@ -112,6 +121,48 @@ public:
 		sys::event_manager<sys::window_close_event>::get().subscribe(this);
 		sys::mouse::record_input(true);
 		sys::keyboard::record_input(true);
+
+		// Set up vertex data (and buffer(s)) and attribute pointers
+		GLfloat vertices[] = {
+			// Positions          // Colors           // Texture Coords
+			0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // Top Right
+			0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // Bottom Right
+			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // Bottom Left
+			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // Top Left
+		};
+		GLuint indices[] = {  // Note that we start from 0!
+			0, 1, 3, // First Triangle
+			1, 2, 3  // Second Triangle
+		};
+		GLuint VBO, VAO, EBO;
+		glGenVertexArrays(1, &VAO);
+		glGenBuffers(1, &VBO);
+		glGenBuffers(1, &EBO);
+
+		glBindVertexArray(VAO);
+
+		glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+		// Position attribute
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
+		glEnableVertexAttribArray(0);
+		// Color attribute
+		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(1);
+		// TexCoord attribute
+		glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+		glEnableVertexAttribArray(2);
+
+		// Draw container
+		m_shader.enable();
+		m_texture.enable();
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glBindVertexArray(0);
 		return status::OK;
 	}
 

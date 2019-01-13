@@ -13,8 +13,8 @@ enum class resource_type
 	SHADER,
 	TEXTURE_DATA,
 	TEXTURE,
-	MESH_DATA,  //  TODO: is it possible (is it needed) to load only mesh?
 	MODEL_DATA,
+	MODEL,
 	ENUM_SIZE
 };
 

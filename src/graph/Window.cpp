@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "graph/Window.h"
 
+#include <EGL/eglext.h>
 namespace dk::graph
 {
 

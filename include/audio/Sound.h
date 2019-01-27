@@ -23,7 +23,7 @@ public:
 
 	ALuint id() const noexcept { return m_id; }
 
-	Status create(const SoundData& data) noexcept;
+	Status create(const SoundData& sound_data) noexcept;
 	void destroy() noexcept;
 };
 

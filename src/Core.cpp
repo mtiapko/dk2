@@ -4,6 +4,7 @@
 #include "audio/Core.h"
 #include "util/Ticker.h"
 #include "sys/ResourceManager.h"
+#include "sys/loaders/OBJ_Loader.h"
 #include "sys/loaders/WAVE_Loader.h"
 #include "sys/loaders/TextureLoader.h"
 
@@ -15,6 +16,7 @@ namespace
 
 sys::WAVE_Loader   wave_loader;
 sys::TextureLoader texture_loader;
+sys::OBJ_Loader    obj_loader;
 
 }
 
@@ -80,11 +82,12 @@ template<> /* static */ graph::Renderer* Core::active<graph::Renderer>() noexcep
 		return ret;
 
 	/* std loaders */
-	sys::ResourceManager::add(&wave_loader, "wav");
+	sys::ResourceManager::add(&wave_loader,    "wav");
 	sys::ResourceManager::add(&texture_loader, "png");
 	sys::ResourceManager::add(&texture_loader, "bmp");
 	sys::ResourceManager::add(&texture_loader, "jpg");
 	sys::ResourceManager::add(&texture_loader, "tga");
+	sys::ResourceManager::add(&obj_loader,     "obj");
 
 	DK_LOG_OK("Engine Core created");
 	return Status::OK;

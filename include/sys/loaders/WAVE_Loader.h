@@ -1,5 +1,5 @@
-#ifndef __DK_SYS_WAVE_DATA_LOADER_H__
-#define __DK_SYS_WAVE_DATA_LOADER_H__
+#ifndef __DK_SYS_WAVE_LOADER_H__
+#define __DK_SYS_WAVE_LOADER_H__
 
 #include "audio/Sound.h"
 #include "sys/ResourceLoader.h"
@@ -68,8 +68,8 @@ struct WAVE_Header
 class WAVE_Loader final: public ResourceLoader
 {
 public:
-	Status load(audio::SoundData& res, StringView file_path) noexcept;
-	Status load(audio::Sound& res, StringView file_path) noexcept;
+	Status load(audio::SoundData& sound_data, StringView file_path) noexcept;
+	Status load(audio::Sound& sound, StringView file_path) noexcept;
 
 	Resource* load(StringView file_path, ResourceType type) noexcept override;
 	Status    load(Resource& res, StringView file_path, ResourceType type) noexcept override;
@@ -77,4 +77,4 @@ public:
 
 }
 
-#endif  //  !__DK_SYS_WAVE_DATA_LOADER_H__
+#endif  //  !__DK_SYS_WAVE_LOADER_H__

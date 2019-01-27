@@ -34,10 +34,12 @@ Sound::~Sound() noexcept /* override */
 	return 0;
 }
 
-Status Sound::create(const SoundData& data) noexcept
+Status Sound::create(const SoundData& sound_data) noexcept
 {
 	AL_CALL(alGenBuffers(1, &m_id));
-	AL_CALL(alBufferData(m_id, convert_to_al_fmt(data.num_channels(), data.bits_per_sample()), data.data(), data.size(), data.sample_rate()));
+	AL_CALL(alBufferData(m_id, convert_to_al_fmt(sound_data.num_channels(),
+		sound_data.bits_per_sample()), sound_data.data(),
+		sound_data.size(), sound_data.sample_rate()));
 	return Status::OK;
 }
 

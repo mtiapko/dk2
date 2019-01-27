@@ -30,7 +30,7 @@ public:
 	GLuint id() const noexcept { return m_id; }
 
 	Status create(StringView file_path, ShaderType type) noexcept;
-	Status create(const ShaderData& data, ShaderType type) noexcept;
+	Status create(const ShaderData& shader_data, ShaderType type) noexcept;
 	void destroy() noexcept;
 };
 

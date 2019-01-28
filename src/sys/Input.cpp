@@ -30,6 +30,9 @@ namespace  //  TODO: make this static member and include everything in input.h f
 
 /* static */ void Input::update() noexcept
 {
+	Mouse::set_dx(0);
+	Mouse::set_dy(0);
+
 	XEvent event;
 	int event_count;
 	while ((event_count = XPending(graph::Window::display()))) {

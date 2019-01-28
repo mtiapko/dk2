@@ -23,6 +23,7 @@ private:
 	::Window   m_window;
 
 public:
+	void clear() const noexcept;
 	void render() const noexcept;  //  TODO: inherit from render_target or render_buffer
 
 	static Display* display() noexcept;

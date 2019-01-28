@@ -147,23 +147,23 @@ Status OBJ_Loader::load(graph::ModelData& model_data, StringView file_path) noex
 				skip_spaces(++file_data);
 				read(file_data, model_data.indx.emplace_back());
 				expect(file_data, '/');
-				read(file_data, norm_indx.emplace_back());
-				expect(file_data, '/');
 				read(file_data, uv_indx.emplace_back());
+				expect(file_data, '/');
+				read(file_data, norm_indx.emplace_back());
 
 				skip_spaces(file_data);
 				read(file_data, model_data.indx.emplace_back());
 				expect(file_data, '/');
-				read(file_data, norm_indx.emplace_back());
-				expect(file_data, '/');
 				read(file_data, uv_indx.emplace_back());
+				expect(file_data, '/');
+				read(file_data, norm_indx.emplace_back());
 
 				skip_spaces(file_data);
 				read(file_data, model_data.indx.emplace_back());
 				expect(file_data, '/');
-				read(file_data, norm_indx.emplace_back());
-				expect(file_data, '/');
 				read(file_data, uv_indx.emplace_back());
+				expect(file_data, '/');
+				read(file_data, norm_indx.emplace_back());
 
 				skip_spaces(file_data);
 				if (*file_data != '\n') {
@@ -196,7 +196,7 @@ Status OBJ_Loader::load(graph::ModelData& model_data, StringView file_path) noex
 	//  TODO: Dirty hach. Rewrite!!!
 	/**/ model_data.vert.reserve(model_data.indx.size());
 	/**/ for (size_t i = 0; i < model_data.indx.size(); ++i) {
-	/**/ 	model_data.vert.emplace_back(pos[model_data.indx[i]], norm[norm_indx[i]], uv[uv_indx[i]]);
+	/**/ 	model_data.vert.emplace_back(pos[model_data.indx[i] - 1], norm[norm_indx[i] - 1], uv[uv_indx[i] - 1]);
 	/**/ 	model_data.indx[i] = i;
 	/**/ }
 

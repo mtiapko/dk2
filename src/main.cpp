@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "audio/Source.h"
 #include "audio/Listener.h"
+#include "graph/Camera.h"
 #include "graph/Model.h"
 #include "graph/Texture.h"
 #include "graph/ShaderProgram.h"
@@ -18,13 +19,16 @@ using namespace dk;
 class test_app final: public Application, sys::EventListener<sys::WindowCloseEvent>
 {
 private:
-	audio::Source        m_speaker;
-	audio::Sound         m_sint;
-	audio::Sound*        m_sint_2;
-	graph::Window*       m_wnd;
-	graph::ShaderProgram m_shader;
-	graph::Texture       m_texture;
-	graph::Model         m_stall;
+	audio::Source          m_speaker;
+	audio::Sound           m_sint;
+	audio::Sound*          m_sint_2;
+	graph::Window*         m_wnd;
+	graph::ShaderProgram   m_shader;
+	graph::Texture         m_texture;
+	graph::Model           m_stall;
+	graph::Camera          m_camera;
+	graph::UniformLocation m_view_location;
+	float m_val = 0.0f;
 
 public:
 	~test_app() noexcept override
@@ -50,7 +54,7 @@ public:
 			changed = true;
 		}
 
-		if (sys::Keyboard::state(sys::KeyboardBtn::A)) {
+		/*if (sys::Keyboard::state(sys::KeyboardBtn::A)) {
 			m_speaker.stop();
 			m_speaker.set(*m_sint_2);
 			m_speaker.play();
@@ -66,7 +70,7 @@ public:
 		} else if (sys::Keyboard::state(sys::KeyboardBtn::S)) {
 			m_speaker.set_sec_offset(m_speaker.sec_offset() - 10.0f);
 			DK_LOG("track time: ", m_speaker.sec_offset(), "s (-10s)");
-		}
+		}*/
 
 		if (sys::Keyboard::state(sys::KeyboardBtn::R))
 			m_speaker.rewind();
@@ -76,11 +80,30 @@ public:
 
 		if (changed)
 			DK_LOG("pitch val: ", m_speaker.pitch());
+
+		m_camera.update();
 	}
 
 	void render() noexcept override
 	{
+		m_wnd->clear();
 		m_shader.enable();
+		auto view = m_camera.view();
+#if 0
+		for (size_t y = 0; y < 4; ++y) {
+			for (size_t x = 0; x < 4; ++x) {
+				std::clog << view.data[y * 4 + x] << ' ';
+			}
+			std::clog << '\n';
+		}
+
+		exit(1);
+#endif
+		graph::UniformLocation m_val_location;
+		m_shader.uniform_location("val", m_val_location);
+		m_shader.set_uniform(m_view_location, view);
+		m_shader.set_uniform(m_val_location, m_val += 0.5f);
+
 		m_texture.enable();
 		m_stall.render();
 		m_wnd->render();
@@ -119,6 +142,8 @@ public:
 
 		if (auto ret = m_shader.link(); !ret)
 			return ret;
+
+		m_shader.uniform_location("view_mat", m_view_location);
 
 		audio::Listener::create();
 		m_speaker.set_gain(1.0f);

@@ -109,13 +109,16 @@ SIMD_Vec4f SIMD_Vec4f::cross(const SIMD_Vec4f& that) const noexcept
 	constexpr unsigned W = 3;
 
 	return { _mm_sub_ps(
-		_mm_mul_ps(SHUFFLE(row, Y, Z, X, W), SHUFFLE(that.row, Z, X, Y, W)),
-		_mm_mul_ps(SHUFFLE(row, Z, X, Y, W), SHUFFLE(that.row, Y, Z, X, W)))
+		//_mm_mul_ps(SHUFFLE(row, Y, Z, X, W), SHUFFLE(that.row, Z, X, Y, W)),
+		//_mm_mul_ps(SHUFFLE(row, Z, X, Y, W), SHUFFLE(that.row, Y, Z, X, W)))
+		_mm_mul_ps(SHUFFLE(row, W, X, Z, Y), SHUFFLE(that.row, W, Y, X, Z)),
+		_mm_mul_ps(SHUFFLE(row, W, Y, X, Z), SHUFFLE(that.row, W, X, Z, Y)))
 	};
 }
 
 float SIMD_Vec4f::length() const noexcept
 {
+	//std::clog << *this << " length: " << util::SIMD::hadd(_mm_mul_ps(row, row)) << '\n';
 	return Algo::sqrt(util::SIMD::hadd(_mm_mul_ps(row, row)));
 }
 

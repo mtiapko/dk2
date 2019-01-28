@@ -38,7 +38,7 @@ public:
 	template<typename A> constexpr Vec4& operator/=(A a) noexcept { x /= a; y /= a; z /= a; w /= a; return *this; }
 
 	template<typename A> constexpr Vec4& operator+=(const Vec4<A>& that) noexcept { x += that.x; y += that.y; z += that.z; w = 0; return *this; }
-	template<typename A> constexpr Vec4& operator-=(const Vec4<A>& that) noexcept { x += that.x; y += that.y; z += that.z; w = 0; return *this; }
+	template<typename A> constexpr Vec4& operator-=(const Vec4<A>& that) noexcept { x -= that.x; y -= that.y; z -= that.z; w = 0; return *this; }
 
 	template<typename A> constexpr decltype(A{} * T{}) dot(const Vec4<A>& that) const noexcept { return x * that.x + y * that.y + z * that.z; }
 	template<typename A> constexpr Vec4<decltype(A{} * T{})> cross(const Vec4<A>& that) const noexcept { return { y * that.z - z * that.y, z * that.x - x * that.z, x * that.y - y * that.x, 0 }; }

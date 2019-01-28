@@ -13,6 +13,8 @@ namespace dk::sys
 /* static */ bool Mouse::s_state[(int)MouseBtn::ENUM_SIZE];
 /* static */ int  Mouse::s_x;
 /* static */ int  Mouse::s_y;
+/* static */ int  Mouse::s_dx;
+/* static */ int  Mouse::s_dy;
 
 /* static */ void Mouse::record_input(bool val) noexcept
 {
@@ -28,6 +30,9 @@ namespace dk::sys
 
 void Mouse::handle(const MouseMoveEvent& e) noexcept /* override */
 {
+	s_dx += e.x() - s_x;
+	s_dy += e.y() - s_y;
+
 	s_x = e.x();
 	s_y = e.y();
 }

@@ -1,6 +1,8 @@
 #ifndef __DK_MATH_VEC2_H__
 #define __DK_MATH_VEC2_H__
 
+#include <iostream>  //  TODO: remove
+
 #include "math/Algo.h"
 
 namespace dk::math
@@ -34,7 +36,7 @@ public:
 	template<typename A> constexpr Vec2& operator/=(A a) noexcept { x /= a; y /= a; return *this; }
 
 	template<typename A> constexpr Vec2& operator+=(const Vec2<A>& that) noexcept { x += that.x; y += that.y; return *this; }
-	template<typename A> constexpr Vec2& operator-=(const Vec2<A>& that) noexcept { x += that.x; y += that.y; return *this; }
+	template<typename A> constexpr Vec2& operator-=(const Vec2<A>& that) noexcept { x -= that.x; y -= that.y; return *this; }
 
 	template<typename A = T> constexpr A length() const noexcept { return Algo::sqrt<A>(x * x + y * y); }
 
@@ -47,6 +49,13 @@ public:
 	constexpr const T* end()   const noexcept { return &y + 1; }
 
 	constexpr T* data() noexcept { return &x; }
+
+	//  TODO: remove
+	friend std::ostream& operator<<(std::ostream& out, const Vec2<T>& vec)
+	{
+		out << '(' << vec.x << ", " << vec.y << ')';
+		return out;
+	}
 };
 
 }

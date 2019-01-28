@@ -18,11 +18,14 @@ Model::~Model() noexcept /* override */
 
 void Model::update() noexcept /* override */
 {
+	//  TODO: ????
 }
 
 void Model::render() noexcept /* override */
 {
 	GL_CALL(glBindVertexArray(m_vao));
+	//  TODO: remove
+	//GL_CALL(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE));
 	GL_CALL(glDrawElements(GL_TRIANGLES, m_indx_count, GL_UNSIGNED_INT, 0));
 }
 
@@ -37,16 +40,16 @@ Status Model::create(const ModelData& model_data) noexcept
 		model_data.vert.data(), GL_STATIC_DRAW));
 
 	/* vertex position */
-	GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0));
 	GL_CALL(glEnableVertexAttribArray(0));
+	GL_CALL(glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)0));
 
 	/* vertex normal */
-	GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float))));
 	GL_CALL(glEnableVertexAttribArray(1));
+	GL_CALL(glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(3 * sizeof(float))));
 
 	/* vertex UV */
-	GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(6 * sizeof(float))));
 	GL_CALL(glEnableVertexAttribArray(2));
+	GL_CALL(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (GLvoid*)(6 * sizeof(float))));
 
 	GL_CALL(glGenBuffers(1, &m_ibo));
 	GL_CALL(glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ibo));

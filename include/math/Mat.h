@@ -6,7 +6,7 @@
 namespace dk::math
 {
 
-using mat4f = SIMD_Mat4f;
+using Mat4f = SIMD_Mat4f;
 
 }
 

@@ -1,6 +1,6 @@
-#include <GL/gl.h>
 #include "Log.h"
 #include "Core.h"
+#include "graph/Debug.h"
 #include "graph/Window.h"
 
 #include <EGL/eglext.h>
@@ -9,6 +9,11 @@ namespace dk::graph
 
 /* static */ Display*   Window::s_display;
 /* static */ EGLDisplay Window::s_egl_display;
+
+void Window::clear() const noexcept
+{
+	GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+}
 
 void Window::render() const noexcept
 {
@@ -143,6 +148,8 @@ Status Window::create() noexcept
 	if (renderer->create() != Status::OK)
 		return Status::ERROR;
 
+	GL_CALL(glEnable(GL_DEPTH_TEST));
+	GL_CALL(glClearColor(0.05f, 0.115f, 0.115f, 1.0f));
 	DK_LOG_OK("Graphic window created");
 	return Status::OK;
 }

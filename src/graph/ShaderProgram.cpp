@@ -24,6 +24,27 @@ void ShaderProgram::disable() const noexcept
 	GL_CALL(glUseProgram(0));
 }
 
+Status ShaderProgram::uniform_location(StringView name, UniformLocation& location) const noexcept
+{
+	location = GL_CALL(glGetUniformLocation(m_id, name.data()));
+	if (location == -1)
+		DK_LOG_WARNING("Uniform variable with name '", name, "' does not exist");
+
+	return Status::OK;
+}
+
+Status ShaderProgram::set_uniform(UniformLocation location, const math::Mat4f& val) const noexcept
+{
+	GL_CALL(glUniformMatrix4fv(location, 1, GL_FALSE, val.data));
+	return Status::OK;
+}
+
+Status ShaderProgram::set_uniform(UniformLocation location, float val) const noexcept
+{
+	GL_CALL(glUniform1f(location, val));
+	return Status::OK;
+}
+
 Status ShaderProgram::add(StringView file_path, ShaderType type) const noexcept
 {
 	Shader shader;

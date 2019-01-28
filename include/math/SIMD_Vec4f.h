@@ -30,8 +30,8 @@ public:
 	SIMD_Vec4f(float a) noexcept;
 	SIMD_Vec4f(float x, float y, float z, float w = 0) noexcept;
 	SIMD_Vec4f(__m128 row_) noexcept;
-	template<typename T> SIMD_Vec4f(const Vec3<T>& that, T w = 0) noexcept { row = _mm_set_ps(that.x, that.y, that.z, w); }
-	template<typename T> SIMD_Vec4f(const Vec4<T>& that) noexcept { row = _mm_set_ps(that.x, that.y, that.z, that.w); }
+	template<typename T> SIMD_Vec4f(const Vec3<T>& that, T w = 0) noexcept { row = _mm_set_ps(w, that.z, that.y, that.x); }
+	template<typename T> SIMD_Vec4f(const Vec4<T>& that) noexcept { row = _mm_set_ps(that.w, that.z, that.y, that.x); }
 
 
 	template<typename T> operator Vec3<T>() const noexcept { return { x, y, z }; }
@@ -65,6 +65,13 @@ public:
 
 	const float* begin() const noexcept;
 	const float* end()   const noexcept;
+
+	//  TODO: remove
+	friend std::ostream& operator<<(std::ostream& out, const SIMD_Vec4f& vec)
+	{
+		out << '(' << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << ')';
+		return out;
+	}
 };
 
 }

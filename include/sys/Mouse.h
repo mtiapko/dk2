@@ -12,8 +12,8 @@ enum class MouseBtn
 	LEFT,
 	MIDDLE,
 	RIGHT,
-	SCROLL_DOWN,
 	SCROLL_UP,
+	SCROLL_DOWN,
 	ENUM_SIZE
 };
 

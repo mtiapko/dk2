@@ -10,12 +10,16 @@ namespace dk::graph
 class Camera
 {
 private:
-	static constexpr float MOVE_SPEED = 0.05f;
-	static constexpr float ROT_SPEED = 0.05f;
+	static constexpr float MOVE_SPEED = 0.085f;
+	static constexpr float ROT_SPEED = 0.5f;
 
 	math::Vec3f m_pos;
 	math::Vec3f m_dir;
+	math::Vec3f m_right;
 	math::Vec3f m_up;
+
+	float m_yaw;
+	float m_pitch;
 
 public:
 	Camera() noexcept;

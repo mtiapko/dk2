@@ -61,17 +61,33 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(57)]  = KeyboardBtn::SPACE;
 	keyboard_btn_map[KEY(28)]  = KeyboardBtn::ENTER;
 	keyboard_btn_map[KEY(111)] = KeyboardBtn::DELETE;
+	keyboard_btn_map[KEY(14)]  = KeyboardBtn::BACK_SPACE;
+	keyboard_btn_map[KEY(58)]  = KeyboardBtn::CAPS_LOCK;
+	keyboard_btn_map[KEY(104)] = KeyboardBtn::PAGE_UP;
+	keyboard_btn_map[KEY(109)] = KeyboardBtn::PAGE_DOWN;
 	keyboard_btn_map[KEY(103)] = KeyboardBtn::UP_ARROW;
 	keyboard_btn_map[KEY(108)] = KeyboardBtn::DOWN_ARROW;
 	keyboard_btn_map[KEY(105)] = KeyboardBtn::LEFT_ARROW;
 	keyboard_btn_map[KEY(106)] = KeyboardBtn::RIGHT_ARROW;
 
-	keyboard_btn_map[KEY(42)]  = KeyboardBtn::L_SHIFT;
-	keyboard_btn_map[KEY(54)]  = KeyboardBtn::R_SHIFT;
-	keyboard_btn_map[KEY(29)]  = KeyboardBtn::L_CTRL;
-	keyboard_btn_map[KEY(97)]  = KeyboardBtn::R_CTRL;
-	keyboard_btn_map[KEY(56)]  = KeyboardBtn::L_ALT;
-	keyboard_btn_map[KEY(100)] = KeyboardBtn::R_ALT;
+	keyboard_btn_map[KEY(42)]  = KeyboardBtn::LEFT_SHIFT;
+	keyboard_btn_map[KEY(54)]  = KeyboardBtn::RIGHT_SHIFT;
+	keyboard_btn_map[KEY(29)]  = KeyboardBtn::LEFT_CTRL;
+	keyboard_btn_map[KEY(97)]  = KeyboardBtn::RIGHT_CTRL;
+	keyboard_btn_map[KEY(56)]  = KeyboardBtn::LEFT_ALT;
+	keyboard_btn_map[KEY(100)] = KeyboardBtn::RIGHT_ALT;
+
+	/* num row */
+	keyboard_btn_map[KEY(2)] = KeyboardBtn::BTN_1;
+	keyboard_btn_map[KEY(3)] = KeyboardBtn::BTN_2;
+	keyboard_btn_map[KEY(4)] = KeyboardBtn::BTN_3;
+	keyboard_btn_map[KEY(5)] = KeyboardBtn::BTN_4;
+	keyboard_btn_map[KEY(6)] = KeyboardBtn::BTN_5;
+	keyboard_btn_map[KEY(7)] = KeyboardBtn::BTN_6;
+	keyboard_btn_map[KEY(8)] = KeyboardBtn::BTN_7;
+	keyboard_btn_map[KEY(9)] = KeyboardBtn::BTN_8;
+	keyboard_btn_map[KEY(10)] = KeyboardBtn::BTN_9;
+	keyboard_btn_map[KEY(11)] = KeyboardBtn::BTN_0;
 
 	/* top row */
 	keyboard_btn_map[KEY(16)] = KeyboardBtn::Q;
@@ -104,6 +120,9 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(48)] = KeyboardBtn::B;
 	keyboard_btn_map[KEY(49)] = KeyboardBtn::N;
 	keyboard_btn_map[KEY(50)] = KeyboardBtn::M;
+
+	if (auto ret = Keyboard::create(); !ret)
+		return ret;
 
 	DK_LOG_OK("Input system created");
 	return Status::OK;

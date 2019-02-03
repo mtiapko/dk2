@@ -3,6 +3,7 @@
 #include "Core.h"
 #include "audio/Source.h"
 #include "audio/Listener.h"
+#include "graph/GUI.h"
 #include "graph/Camera.h"
 #include "graph/Model.h"
 #include "graph/Texture.h"
@@ -28,6 +29,7 @@ private:
 	graph::Model           m_stall;
 	graph::Camera          m_camera;
 	graph::UniformLocation m_view_location;
+	graph::UniformLocation m_proj_location;
 	float m_val = 0.0f;
 
 public:
@@ -44,7 +46,7 @@ public:
 	void update(float) noexcept override
 	{
 		bool changed = false;
-		if (sys::Keyboard::state(sys::KeyboardBtn::UP_ARROW)) {
+		/*if (sys::Keyboard::state(sys::KeyboardBtn::UP_ARROW)) {
 			m_speaker.set_pitch(m_speaker.pitch() + 0.01f);
 			changed = true;
 		}
@@ -52,7 +54,7 @@ public:
 		if (sys::Keyboard::state(sys::KeyboardBtn::DOWN_ARROW)) {
 			m_speaker.set_pitch(m_speaker.pitch() - 0.01f);
 			changed = true;
-		}
+		}*/
 
 		/*if (sys::Keyboard::state(sys::KeyboardBtn::A)) {
 			m_speaker.stop();
@@ -82,12 +84,14 @@ public:
 			DK_LOG("pitch val: ", m_speaker.pitch());
 
 		m_camera.update();
+		graph::GUI::update();
 	}
 
 	void render() noexcept override
 	{
 		m_wnd->clear();
 		m_shader.enable();
+		auto proj = math::Mat4f::get_perspective(90.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		auto view = m_camera.view();
 #if 0
 		for (size_t y = 0; y < 4; ++y) {
@@ -99,13 +103,18 @@ public:
 
 		exit(1);
 #endif
-		graph::UniformLocation m_val_location;
-		m_shader.uniform_location("val", m_val_location);
 		m_shader.set_uniform(m_view_location, view);
-		m_shader.set_uniform(m_val_location, m_val += 0.5f);
-
+		m_shader.set_uniform(m_proj_location, proj);
 		m_texture.enable();
 		m_stall.render();
+
+		/* GUI */
+		ImGui::Begin("Matrix");
+		ImGui::SliderFloat("Rot Y", &m_val, 0.0f, 360.0f);
+		//ImGui::InputFloat("Rot Y2", &m_val, 0.1f, 10.0f);
+		ImGui::End();
+
+		graph::GUI::render();
 		m_wnd->render();
 	}
 
@@ -144,6 +153,7 @@ public:
 			return ret;
 
 		m_shader.uniform_location("view_mat", m_view_location);
+		m_shader.uniform_location("proj_mat", m_proj_location);
 
 		audio::Listener::create();
 		m_speaker.set_gain(1.0f);

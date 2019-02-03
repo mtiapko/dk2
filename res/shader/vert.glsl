@@ -1,7 +1,8 @@
 #version 330 core
 
+uniform mat4 proj_mat;
 uniform mat4 view_mat;
-uniform float val;
+uniform mat4 model_mat;
 
 layout (location = 0) in vec3 attr_vert_pos;
 layout (location = 1) in vec3 attr_vert_norm;
@@ -15,29 +16,9 @@ void main()
 	vert_norm = attr_vert_norm;
 	vert_uv = attr_vert_uv;
 
-	mat4 view = mat4(
-		vec4(1, 0, 0, 0),
-		vec4(0, 1, 0, 0),
-		vec4(0, 0, 1, 0),
-		vec4(0, 0, 0, 1)
-	);
+	mat4 proj = proj_mat;
+	mat4 view = view_mat;
+	mat4 model = model_mat;
 
-	float a = val * 3.1415926 / 180.0;
-	float c = cos(a);
-	float s = sin(a);
-	mat4 model = mat4(
-#if 0
-		vec4(0.2, 0, 0, 0),
-		vec4(0, 0.2, 0, 0),
-		vec4(0, 0, 0.1, 0),
-		vec4(0, 0, 0, 1)
-#else
-		vec4(c * 0.1, 0, s, 0),
-		vec4(0, 0.1, 0, 0),
-		vec4(-s, 0, c * 0.1, 0),
-		vec4(0, 0, 0, 1)
-#endif
-	);
-
-	gl_Position = model * vec4(attr_vert_pos, 1.0);
+	gl_Position = vec4(attr_vert_pos, 1.0) * view * proj;
 }

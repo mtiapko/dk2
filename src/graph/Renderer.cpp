@@ -1,4 +1,5 @@
 #include <GL/glew.h>
+#include "graph/GUI.h"
 #include "graph/Renderer.h"
 #include "Log.h"
 
@@ -27,6 +28,9 @@ Status Renderer::create() noexcept
 	}
 
 	DK_LOG_OK("Graphic renderer created");
+	if (auto ret = GUI::create(); !ret)
+		return ret;
+
 	return Status::OK;
 }
 

@@ -207,25 +207,16 @@ SIMD_Mat4f::SIMD_Mat4f(SIMD_Vec4f row0, SIMD_Vec4f row1, SIMD_Vec4f row2, SIMD_V
 
 /* static */ SIMD_Mat4f SIMD_Mat4f::get_look_at(const SIMD_Vec4f& pos, const SIMD_Vec4f& target, const SIMD_Vec4f& up) noexcept
 {
-	//std::clog << pos << '\n' << target << '\n' << up << '\n' << '\n';
 	const SIMD_Vec4f camDir = (pos - target).normalize();
 	const SIMD_Vec4f camRight = up.cross(camDir).normalize();
 	const SIMD_Vec4f camUp = camDir.cross(camRight);
 
-	//std::clog << camDir << '\n' << camRight << '\n' << camUp << '\n';
-
 	return SIMD_Mat4f {
-		//camRight.row,
-		//camUp.row,
-		//camDir.row,
-		//_mm_set_ps(0.0f, camDir.x, camUp.x, camRight.x),
-		//_mm_set_ps(0.0f, camDir.y, camUp.y, camRight.y),
-		//_mm_set_ps(0.0f, camDir.z, camUp.z, camRight.z),
 		_mm_set_ps(0.0f, camRight.z, camRight.y, camRight.x),
 		_mm_set_ps(0.0f, camUp.z, camUp.y, camUp.x),
 		_mm_set_ps(0.0f, camDir.z, camDir.y, camDir.x),
 		_mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f)
-	};//.translate(pos);
+	} * get_translate(pos);
 }
 
 SIMD_Mat4f SIMD_Mat4f::operator+(float a) const noexcept

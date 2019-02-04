@@ -12,6 +12,7 @@ TextureData::TextureData() noexcept
 	, m_red_bits(0)
 	, m_green_bits(0)
 	, m_blue_bits(0)
+	, m_alpha_bits(0)
 {}
 
 TextureData::~TextureData() noexcept /* override */

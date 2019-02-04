@@ -14,7 +14,7 @@ Texture::~Texture() noexcept /* override */
 	this->destroy();
 }
 
-/* static */ GLenum Texture::convert_to_gl_fmt(uint8_t red_bits,
+/* static */ GLenum Texture::to_gl_fmt(uint8_t red_bits,
 	uint8_t green_bits, uint8_t blue_bits, uint8_t alpha_bits) noexcept
 {
 	(void)red_bits;
@@ -24,6 +24,11 @@ Texture::~Texture() noexcept /* override */
 		return GL_RGB;
 
 	return GL_RGBA;
+}
+
+/* static */ GLenum Texture::to_gl_fmt(const TextureData& data) noexcept
+{
+	return to_gl_fmt(data.red_bits(), data.green_bits(), data.blue_bits(), data.alpha_bits());
 }
 
 void Texture::enable() const noexcept
@@ -40,7 +45,7 @@ Status Texture::create(const TextureData& data) noexcept
 {
 	GL_CALL(glGenTextures(1, &m_id));
 	this->enable();
-	GLenum format = convert_to_gl_fmt(data.red_bits(), data.green_bits(), data.blue_bits(), data.alpha_bits());
+	GLenum format = to_gl_fmt(data);
 	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 	GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, format, data.width(), data.height(), 0, format, GL_UNSIGNED_BYTE, data.data()));

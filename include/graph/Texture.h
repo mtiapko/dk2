@@ -13,13 +13,13 @@ class Texture final: public Resource
 private:
 	GLuint m_id;
 
-	static GLenum convert_to_gl_fmt(uint8_t red_bits, uint8_t green_bits, uint8_t blue_bits, uint8_t alpha_bits) noexcept;
-
 public:
 	Texture() noexcept;
 	~Texture() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::TEXTURE; }
+	static GLenum to_gl_fmt(uint8_t red_bits, uint8_t green_bits, uint8_t blue_bits, uint8_t alpha_bits) noexcept;
+	static GLenum to_gl_fmt(const TextureData& data) noexcept;
 
 	void enable() const noexcept;
 	void disable() const noexcept;

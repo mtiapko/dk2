@@ -4,6 +4,7 @@
 #include "audio/Source.h"
 #include "audio/Listener.h"
 #include "graph/GUI.h"
+#include "graph/CubeMap.h"
 #include "graph/Camera.h"
 #include "graph/Model.h"
 #include "graph/Texture.h"
@@ -24,12 +25,19 @@ private:
 	audio::Sound           m_sint;
 	audio::Sound*          m_sint_2;
 	graph::Window*         m_wnd;
-	graph::ShaderProgram   m_shader;
 	graph::Texture         m_texture;
 	graph::Model           m_stall;
 	graph::Camera          m_camera;
+
+	graph::ShaderProgram   m_shader;
 	graph::UniformLocation m_view_location;
 	graph::UniformLocation m_proj_location;
+
+	graph::CubeMap         m_cube_map;
+	graph::ShaderProgram   m_cube_map_shader;
+	graph::UniformLocation m_cube_map_view_loc;
+	graph::UniformLocation m_cube_map_proj_loc;
+
 	float m_val = 0.0f;
 
 public:
@@ -45,43 +53,11 @@ public:
 
 	void update(float) noexcept override
 	{
-		bool changed = false;
-		/*if (sys::Keyboard::state(sys::KeyboardBtn::UP_ARROW)) {
-			m_speaker.set_pitch(m_speaker.pitch() + 0.01f);
-			changed = true;
-		}
-
-		if (sys::Keyboard::state(sys::KeyboardBtn::DOWN_ARROW)) {
-			m_speaker.set_pitch(m_speaker.pitch() - 0.01f);
-			changed = true;
-		}*/
-
-		/*if (sys::Keyboard::state(sys::KeyboardBtn::A)) {
-			m_speaker.stop();
-			m_speaker.set(*m_sint_2);
-			m_speaker.play();
-		} else if (sys::Keyboard::state(sys::KeyboardBtn::D)) {
-			m_speaker.stop();
-			m_speaker.set(m_sint);
-			m_speaker.play();
-		}
-
-		if (sys::Keyboard::state(sys::KeyboardBtn::W)) {
-			m_speaker.set_sec_offset(m_speaker.sec_offset() + 10.0f);
-			DK_LOG("track time: ", m_speaker.sec_offset(), "s (+10s)");
-		} else if (sys::Keyboard::state(sys::KeyboardBtn::S)) {
-			m_speaker.set_sec_offset(m_speaker.sec_offset() - 10.0f);
-			DK_LOG("track time: ", m_speaker.sec_offset(), "s (-10s)");
-		}*/
-
 		if (sys::Keyboard::state(sys::KeyboardBtn::R))
 			m_speaker.rewind();
 
 		if (sys::Keyboard::state(sys::KeyboardBtn::ESCAPE))
 			Core::stop();
-
-		if (changed)
-			DK_LOG("pitch val: ", m_speaker.pitch());
 
 		m_camera.update();
 		graph::GUI::update();
@@ -90,19 +66,15 @@ public:
 	void render() noexcept override
 	{
 		m_wnd->clear();
-		m_shader.enable();
 		auto proj = math::Mat4f::get_perspective(90.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		auto view = m_camera.view();
-#if 0
-		for (size_t y = 0; y < 4; ++y) {
-			for (size_t x = 0; x < 4; ++x) {
-				std::clog << view.data[y * 4 + x] << ' ';
-			}
-			std::clog << '\n';
-		}
 
-		exit(1);
-#endif
+		m_cube_map_shader.enable();
+		m_shader.set_uniform(m_cube_map_view_loc, view);
+		m_shader.set_uniform(m_cube_map_proj_loc, proj);
+		m_cube_map.render();
+
+		m_shader.enable();
 		m_shader.set_uniform(m_view_location, view);
 		m_shader.set_uniform(m_proj_location, proj);
 		m_texture.enable();
@@ -111,7 +83,6 @@ public:
 		/* GUI */
 		ImGui::Begin("Matrix");
 		ImGui::SliderFloat("Rot Y", &m_val, 0.0f, 360.0f);
-		//ImGui::InputFloat("Rot Y2", &m_val, 0.1f, 10.0f);
 		ImGui::End();
 
 		graph::GUI::render();
@@ -140,6 +111,7 @@ public:
 		if (auto ret = sys::ResourceManager::load(m_texture, "res/tex/stallTexture.png"); !ret)
 			return ret;
 
+		/* basic shader */
 		if (auto ret = m_shader.create(); !ret)
 			return ret;
 
@@ -154,6 +126,35 @@ public:
 
 		m_shader.uniform_location("view_mat", m_view_location);
 		m_shader.uniform_location("proj_mat", m_proj_location);
+
+		/* cube map shader */
+		if (auto ret = m_cube_map_shader.create(); !ret)
+			return ret;
+
+		if (auto ret = m_cube_map_shader.add("res/shader/cube_map_vert.glsl", graph::ShaderType::VERTEX); !ret)
+			return ret;
+
+		if (auto ret = m_cube_map_shader.add("res/shader/cube_map_frag.glsl", graph::ShaderType::FRAGMENT); !ret)
+			return ret;
+
+		if (auto ret = m_cube_map_shader.link(); !ret)
+			return ret;
+
+		m_cube_map_shader.uniform_location("view_mat", m_cube_map_view_loc);
+		m_cube_map_shader.uniform_location("proj_mat", m_cube_map_proj_loc);
+
+		if (auto ret = graph::CubeMap::init(); !ret)
+			return ret;
+
+		if (auto ret = m_cube_map.create(
+				"res/skybox/right.jpg",
+				"res/skybox/left.jpg",
+				"res/skybox/top.jpg",
+				"res/skybox/bottom.jpg",
+				"res/skybox/front.jpg",
+				"res/skybox/back.jpg"
+		); !ret)
+			return ret;
 
 		audio::Listener::create();
 		m_speaker.set_gain(1.0f);

@@ -84,10 +84,10 @@ void GUI::handle(const sys::KeyReleaseEvent& e) noexcept /* override */
 
 	ImGui::CreateContext();
 	ImGuiIO& io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("res/fonts/ProggyVector Regular.ttf", 16.0f);
+	io.Fonts->AddFontFromFileTTF("res/font/ProggyVector Regular.ttf", 16.0f);
 
 	ImGui::StyleColorsDark();
-	io.DisplaySize = ImVec2((float)800, (float)600);
+	io.DisplaySize = ImVec2((float)1280, (float)1024);
 	io.BackendPlatformName ="DK";
 
 	io.KeyMap[ImGuiKey_Tab]        = (int)sys::KeyboardBtn::TAB;

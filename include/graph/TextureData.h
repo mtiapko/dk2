@@ -19,7 +19,8 @@ private:
 	uint8_t  m_alpha_bits;
 
 public:
-	TextureData() noexcept;
+	TextureData() noexcept : TextureData(nullptr) {}
+	TextureData(ResourceManager* res_mgr) noexcept;
 	~TextureData() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::TEXTURE_DATA; }

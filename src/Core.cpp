@@ -1,10 +1,10 @@
 #include "Log.h"
 #include "Core.h"
+#include "ResourceManager.h"
 #include "sys/Input.h"
 #include "audio/Core.h"
 #include "util/Perf.h"
 #include "util/Ticker.h"
-#include "sys/ResourceManager.h"
 #include "sys/loaders/OBJ_Loader.h"
 #include "sys/loaders/WAVE_Loader.h"
 #include "sys/loaders/TextureLoader.h"
@@ -87,12 +87,12 @@ template<> /* static */ graph::Renderer* Core::active<graph::Renderer>() noexcep
 		return ret;
 
 	/* std loaders */
-	sys::ResourceManager::add(&wave_loader,    "wav");
-	sys::ResourceManager::add(&texture_loader, "png");
-	sys::ResourceManager::add(&texture_loader, "bmp");
-	sys::ResourceManager::add(&texture_loader, "jpg");
-	sys::ResourceManager::add(&texture_loader, "tga");
-	sys::ResourceManager::add(&obj_loader,     "obj");
+	ResourceManager::add(&wave_loader,    "wav");
+	ResourceManager::add(&texture_loader, "png");
+	ResourceManager::add(&texture_loader, "bmp");
+	ResourceManager::add(&texture_loader, "jpg");
+	ResourceManager::add(&texture_loader, "tga");
+	ResourceManager::add(&obj_loader,     "obj");
 
 	DK_LOG_OK("Engine Core created");
 	return Status::OK;

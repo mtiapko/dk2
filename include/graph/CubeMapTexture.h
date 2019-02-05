@@ -15,7 +15,8 @@ private:
 	GLuint m_id;
 
 public:
-	CubeMapTexture() noexcept;
+	CubeMapTexture() noexcept : CubeMapTexture(nullptr) {}
+	CubeMapTexture(ResourceManager* res_mgr) noexcept;
 	~CubeMapTexture() noexcept override;
 
 	void enable() const noexcept;

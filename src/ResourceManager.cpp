@@ -1,11 +1,11 @@
-#include "sys/ResourceManager.h"
 #include "containers/String.h"
+#include "ResourceManager.h"
 #include "Log.h"
 
-namespace dk::sys
+namespace dk
 {
 
-/* static */ HashTable<StringView, ResourceLoader*> ResourceManager::s_loaders;
+/* static */ HashTable<StringView, sys::ResourceLoader*> ResourceManager::s_loaders;
 
 /* static */ Resource* ResourceManager::load(StringView file_path, ResourceType type) noexcept
 {
@@ -39,7 +39,7 @@ namespace dk::sys
 	return { &file_path[dot_pos], file_path.size() - dot_pos };
 }
 
-/* static */ ResourceLoader* ResourceManager::loader(StringView mime) noexcept
+/* static */ sys::ResourceLoader* ResourceManager::loader(StringView mime) noexcept
 {
 	auto ld = s_loaders.find(mime);
 	if (ld != s_loaders.cend())
@@ -48,7 +48,7 @@ namespace dk::sys
 	return nullptr;
 }
 
-/* static */ void ResourceManager::add(ResourceLoader* loader, StringView mime) noexcept
+/* static */ void ResourceManager::add(sys::ResourceLoader* loader, StringView mime) noexcept
 {
 	s_loaders[mime] = loader;
 }

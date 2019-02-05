@@ -52,8 +52,9 @@ namespace dk::graph
 	/**/  1.0f, -1.0f,  1.0f
 };
 
-CubeMap::CubeMap() noexcept
-	: m_tex(nullptr)
+CubeMap::CubeMap(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_tex(nullptr)
 {}
 
 CubeMap::~CubeMap() noexcept /* override */

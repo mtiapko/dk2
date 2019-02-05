@@ -16,7 +16,8 @@ private:
 	static ALenum convert_to_al_fmt(uint32_t num_channels, uint32_t bits_per_sample) noexcept;
 
 public:
-	Sound() noexcept;
+	Sound() noexcept : Sound(nullptr) {}
+	Sound(ResourceManager* res_mgr) noexcept;
 	~Sound() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::SOUND; }

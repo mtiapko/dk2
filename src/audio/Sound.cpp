@@ -4,8 +4,9 @@
 namespace dk::audio
 {
 
-Sound::Sound() noexcept
-	: m_id(0)
+Sound::Sound(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_id(0)
 {}
 
 Sound::~Sound() noexcept /* override */

@@ -14,7 +14,8 @@ private:
 	GLuint m_id;
 
 public:
-	ShaderProgram() noexcept;
+	ShaderProgram() noexcept : ShaderProgram(nullptr) {}
+	ShaderProgram(ResourceManager* res_mgr) noexcept;
 	~ShaderProgram() noexcept override;
 
 	void enable() const noexcept;

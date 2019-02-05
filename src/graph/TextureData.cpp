@@ -5,8 +5,9 @@
 namespace dk::graph
 {
 
-TextureData::TextureData() noexcept
-	: m_data(nullptr)
+TextureData::TextureData(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_data(nullptr)
 	, m_width(0)
 	, m_height(0)
 	, m_red_bits(0)

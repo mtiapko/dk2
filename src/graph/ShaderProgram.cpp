@@ -5,8 +5,9 @@
 namespace dk::graph
 {
 
-ShaderProgram::ShaderProgram() noexcept
-	: m_id(0)
+ShaderProgram::ShaderProgram(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_id(0)
 {}
 
 ShaderProgram::~ShaderProgram() noexcept /* override */
@@ -47,7 +48,7 @@ Status ShaderProgram::set_uniform(UniformLocation location, float val) const noe
 
 Status ShaderProgram::add(StringView file_path, ShaderType type) const noexcept
 {
-	Shader shader;
+	Shader shader(nullptr);
 	if (auto ret = shader.create(file_path, type); !ret)
 		return ret;
 

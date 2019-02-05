@@ -1,14 +1,15 @@
 #include <GL/glew.h>
-#include "graph/Debug.h"
-#include "graph/Texture.h"
+#include "ResourceManager.h"
 #include "graph/CubeMapTexture.h"
-#include "sys/ResourceManager.h"
+#include "graph/Texture.h"
+#include "graph/Debug.h"
 
 namespace dk::graph
 {
 
-CubeMapTexture::CubeMapTexture() noexcept
-	: m_id(0)
+CubeMapTexture::CubeMapTexture(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_id(0)
 {}
 
 CubeMapTexture::~CubeMapTexture() noexcept
@@ -51,28 +52,28 @@ Status CubeMapTexture::create(const TextureData& right, const TextureData& left,
 Status CubeMapTexture::create(StringView right, StringView left, StringView top,
 		StringView bottom, StringView front, StringView back) noexcept
 {
-	TextureData right_tex;
-	if (auto ret = sys::ResourceManager::load(right_tex, right); !ret)
+	TextureData right_tex(nullptr);
+	if (auto ret = m_res_mgr->load(right_tex, right); !ret)
 		return ret;
 
-	TextureData left_tex;
-	if (auto ret = sys::ResourceManager::load(left_tex, left); !ret)
+	TextureData left_tex(nullptr);
+	if (auto ret = m_res_mgr->load(left_tex, left); !ret)
 		return ret;
 
-	TextureData top_tex;
-	if (auto ret = sys::ResourceManager::load(top_tex, top); !ret)
+	TextureData top_tex(nullptr);
+	if (auto ret = m_res_mgr->load(top_tex, top); !ret)
 		return ret;
 
-	TextureData bottom_tex;
-	if (auto ret = sys::ResourceManager::load(bottom_tex, bottom); !ret)
+	TextureData bottom_tex(nullptr);
+	if (auto ret = m_res_mgr->load(bottom_tex, bottom); !ret)
 		return ret;
 
-	TextureData front_tex;
-	if (auto ret = sys::ResourceManager::load(front_tex, front); !ret)
+	TextureData front_tex(nullptr);
+	if (auto ret = m_res_mgr->load(front_tex, front); !ret)
 		return ret;
 
-	TextureData back_tex;
-	if (auto ret = sys::ResourceManager::load(back_tex, back); !ret)
+	TextureData back_tex(nullptr);
+	if (auto ret = m_res_mgr->load(back_tex, back); !ret)
 		return ret;
 
 	return create(right_tex, left_tex, top_tex, bottom_tex, front_tex, back_tex);

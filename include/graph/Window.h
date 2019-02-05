@@ -22,9 +22,18 @@ private:
 	EGLSurface m_surface;
 	::Window   m_window;
 
+	uint32_t m_width;
+	uint32_t m_height;
+
 public:
+	Window() noexcept;
+
 	void clear() const noexcept;
 	void render() const noexcept;  //  TODO: inherit from render_target or render_buffer
+
+	uint32_t width() const noexcept { return m_width; }
+	uint32_t height() const noexcept { return m_height; }
+	float    ratio() const noexcept { return (float)m_width / m_height; }
 
 	static Display* display() noexcept;
 

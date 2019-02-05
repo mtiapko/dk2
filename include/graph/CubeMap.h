@@ -17,7 +17,8 @@ private:
 	const CubeMapTexture* m_tex;
 
 public:
-	CubeMap() noexcept;
+	CubeMap() noexcept : CubeMap(nullptr) {}
+	CubeMap(ResourceManager* res_mgr) noexcept;
 	~CubeMap() noexcept override;
 
 	static Status init() noexcept;

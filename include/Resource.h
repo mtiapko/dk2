@@ -20,7 +20,11 @@ enum class ResourceType
 
 class Resource
 {
+protected:
+	class ResourceManager* m_res_mgr;
+
 public:
+	Resource(class ResourceManager* res_mgr) : m_res_mgr(res_mgr) {}
 	virtual ~Resource() noexcept = default;
 
 	static ResourceType type() noexcept { return ResourceType::UNKNOWN; }

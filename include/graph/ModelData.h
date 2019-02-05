@@ -28,7 +28,8 @@ public:
 	Vector<ModelDataVertex> vert;
 	Vector<uint32_t>        indx;
 
-	ModelData() noexcept = default;
+	ModelData() noexcept : ModelData(nullptr) {}
+	ModelData(ResourceManager* res_mgr) noexcept;
 	~ModelData() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::MODEL_DATA; }

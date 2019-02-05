@@ -16,7 +16,8 @@ private:
 	StringView m_file_path;
 
 public:
-	ShaderData() noexcept = default;
+	ShaderData() noexcept : ShaderData(nullptr) {}
+	ShaderData(ResourceManager* res_mgr) noexcept;
 	~ShaderData() noexcept override = default;
 
 	static ResourceType type() noexcept { return ResourceType::SHADER_DATA; }

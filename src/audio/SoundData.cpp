@@ -4,8 +4,9 @@
 namespace dk::audio
 {
 
-SoundData::SoundData() noexcept
-	: m_data(nullptr)
+SoundData::SoundData(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_data(nullptr)
 	, m_size(0)
 	, m_num_channels(0)
 	, m_sample_rate(0)

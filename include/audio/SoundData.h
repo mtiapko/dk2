@@ -18,7 +18,8 @@ private:
 	uint32_t m_bits_per_sample;
 
 public:
-	SoundData() noexcept;
+	SoundData() noexcept : SoundData(nullptr) {}
+	SoundData(ResourceManager* res_mgr) noexcept;
 	~SoundData() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::SOUND_DATA; }

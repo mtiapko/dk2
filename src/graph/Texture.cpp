@@ -5,8 +5,9 @@
 namespace dk::graph
 {
 
-Texture::Texture() noexcept
-	: m_id(0)
+Texture::Texture(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_id(0)
 {}
 
 Texture::~Texture() noexcept /* override */

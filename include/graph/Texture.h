@@ -14,7 +14,8 @@ private:
 	GLuint m_id;
 
 public:
-	Texture() noexcept;
+	Texture() noexcept : Texture(nullptr) {}
+	Texture(ResourceManager* res_mgr) noexcept;
 	~Texture() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::TEXTURE; }

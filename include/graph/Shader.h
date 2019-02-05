@@ -22,7 +22,8 @@ private:
 	static GLenum convert_to_gl_type(ShaderType type) noexcept;
 
 public:
-	Shader() noexcept;
+	Shader() noexcept : Shader(nullptr) {};
+	Shader(ResourceManager* res_mgr) noexcept;
 	~Shader() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::SHADER; }

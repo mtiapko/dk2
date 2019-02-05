@@ -1,6 +1,7 @@
 #include <GL/glew.h>
 #include "Log.h"
 #include "Core.h"
+#include "ResourceManager.h"
 #include "audio/Source.h"
 #include "audio/Listener.h"
 #include "graph/GUI.h"
@@ -9,7 +10,6 @@
 #include "graph/Model.h"
 #include "graph/Texture.h"
 #include "graph/ShaderProgram.h"
-#include "sys/ResourceManager.h"
 #include "sys/events/WindowCloseEvent.h"
 #include "sys/EventListener.h"
 #include "sys/EventManager.h"
@@ -21,6 +21,8 @@ using namespace dk;
 class test_app final: public Application, sys::EventListener<sys::WindowCloseEvent>
 {
 private:
+	ResourceManager        m_res_mgr;
+
 	audio::Source          m_speaker;
 	audio::Sound           m_sint;
 	audio::Sound*          m_sint_2;
@@ -30,8 +32,8 @@ private:
 	graph::Camera          m_camera;
 
 	graph::ShaderProgram   m_shader;
-	graph::UniformLocation m_view_location;
-	graph::UniformLocation m_proj_location;
+	graph::UniformLocation m_view_loc;
+	graph::UniformLocation m_proj_loc;
 
 	graph::CubeMap         m_cube_map;
 	graph::CubeMapTexture  m_cube_map_tex;
@@ -67,17 +69,14 @@ public:
 	void render() noexcept override
 	{
 		m_wnd->clear();
-		auto proj = math::Mat4f::get_perspective(90.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		auto view = m_camera.view();
 
 		m_cube_map_shader.enable();
 		m_shader.set_uniform(m_cube_map_view_loc, view);
-		m_shader.set_uniform(m_cube_map_proj_loc, proj);
 		m_cube_map.render();
 
 		m_shader.enable();
-		m_shader.set_uniform(m_view_location, view);
-		m_shader.set_uniform(m_proj_location, proj);
+		m_shader.set_uniform(m_view_loc, view);
 		m_texture.enable();
 		m_stall.render();
 
@@ -100,16 +99,16 @@ public:
 		if (auto ret = m_speaker.create(); !ret)
 			return ret;
 
-		if (auto ret = sys::ResourceManager::load(m_sint, "res/audio/sint.wav"); !ret)
+		if (auto ret = m_res_mgr.load(m_sint, "res/audio/sint.wav"); !ret)
 			return ret;
 
-		if (auto ret = sys::ResourceManager::load(m_stall, "res/model/stall.obj"); !ret)
+		if (auto ret = m_res_mgr.load(m_stall, "res/model/stall.obj"); !ret)
 			return ret;
 
-		if ((m_sint_2 = sys::ResourceManager::load<audio::Sound>("res/audio/sint.wav")) == nullptr)
+		if ((m_sint_2 = m_res_mgr.load<audio::Sound>("res/audio/sint.wav")) == nullptr)
 			return Status::ERROR;
 
-		if (auto ret = sys::ResourceManager::load(m_texture, "res/tex/stallTexture.png"); !ret)
+		if (auto ret = m_res_mgr.load(m_texture, "res/tex/stallTexture.png"); !ret)
 			return ret;
 
 		/* basic shader */
@@ -125,8 +124,11 @@ public:
 		if (auto ret = m_shader.link(); !ret)
 			return ret;
 
-		m_shader.uniform_location("view_mat", m_view_location);
-		m_shader.uniform_location("proj_mat", m_proj_location);
+		auto proj = math::Mat4f::get_perspective(90.0f, m_wnd->ratio(), 0.1f, 100.0f);
+		m_shader.enable();
+		m_shader.uniform_location("view_mat", m_view_loc);
+		m_shader.uniform_location("proj_mat", m_proj_loc);
+		m_shader.set_uniform(m_proj_loc, proj);
 
 		/* cube map shader */
 		if (auto ret = m_cube_map_shader.create(); !ret)
@@ -141,8 +143,10 @@ public:
 		if (auto ret = m_cube_map_shader.link(); !ret)
 			return ret;
 
+		m_cube_map_shader.enable();
 		m_cube_map_shader.uniform_location("view_mat", m_cube_map_view_loc);
 		m_cube_map_shader.uniform_location("proj_mat", m_cube_map_proj_loc);
+		m_cube_map_shader.set_uniform(m_cube_map_proj_loc, proj);
 
 		if (auto ret = renderer->init_module<graph::CubeMap>(); !ret)
 			return ret;

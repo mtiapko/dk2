@@ -18,7 +18,8 @@ private:
 	GLuint m_indx_count;
 
 public:
-	Model() noexcept;
+	Model() noexcept : Model(nullptr) {}
+	Model(ResourceManager* res_mgr) noexcept;
 	~Model() noexcept override;
 
 	static ResourceType type() noexcept { return ResourceType::MODEL; }

@@ -10,6 +10,11 @@ namespace dk::graph
 /* static */ Display*   Window::s_display;
 /* static */ EGLDisplay Window::s_egl_display;
 
+Window::Window() noexcept
+	: m_width(1280)
+	, m_height(1024)
+{}
+
 void Window::clear() const noexcept
 {
 	GL_CALL(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
@@ -90,7 +95,7 @@ Status Window::create() noexcept
 	}
 
 	m_window = XCreateWindow(s_display, RootWindow(s_display, vi->screen),
-		0, 0, 800, 600, 0, vi->depth, InputOutput, vi->visual, 0, nullptr);
+		0, 0, m_width, m_height, 0, vi->depth, InputOutput, vi->visual, 0, nullptr);
 	XFree(vi);
 
 	if (m_window == 0) {

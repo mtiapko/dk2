@@ -5,8 +5,9 @@
 namespace dk::graph
 {
 
-Model::Model() noexcept
-	: m_vao(0)
+Model::Model(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_vao(0)
 	, m_vbo(0)
 	, m_ibo(0)
 {}

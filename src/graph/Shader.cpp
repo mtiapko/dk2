@@ -5,8 +5,9 @@
 namespace dk::graph
 {
 
-Shader::Shader() noexcept
-	: m_id(0)
+Shader::Shader(ResourceManager* res_mgr) noexcept
+	: Resource(res_mgr)
+	, m_id(0)
 {}
 
 Shader::~Shader() noexcept /* override */
@@ -28,7 +29,7 @@ Shader::~Shader() noexcept /* override */
 
 Status Shader::create(StringView file_path, ShaderType type) noexcept
 {
-	ShaderData data;
+	ShaderData data(nullptr);
 	if (auto ret = data.create(file_path); !ret)
 		return ret;
 

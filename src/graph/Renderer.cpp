@@ -1,5 +1,6 @@
 #include <GL/glew.h>
 #include "graph/GUI.h"
+#include "graph/CubeMap.h"
 #include "graph/Renderer.h"
 #include "Log.h"
 
@@ -7,6 +8,16 @@ namespace dk::graph
 {
 
 /* static */ bool Renderer::s_is_init = false;
+
+Status Renderer::init_module(RendererModuleID module_id) noexcept
+{
+	switch (module_id) {
+		case RendererModuleID::CUBE_MAP: return CubeMap::init();
+		default:
+			DK_LOG_ERROR("Renderer does not support module with ID #", (int)module_id);
+			return Status::ERROR;
+	}
+}
 
 Window* Renderer::create_window() noexcept
 {

@@ -9,7 +9,7 @@
 namespace dk::graph
 {
 
-class Model final: public Resource, Entity
+class Model final: public Resource, public Entity
 {
 private:
 	GLuint m_vao;

@@ -2,8 +2,6 @@
 #include "Assert.h"
 #include "graph/Debug.h"
 #include "graph/CubeMap.h"
-#include "graph/Texture.h"
-#include "sys/ResourceManager.h"
 
 namespace dk::graph
 {
@@ -55,10 +53,10 @@ namespace dk::graph
 };
 
 CubeMap::CubeMap() noexcept
-	: m_id(0)
+	: m_tex(nullptr)
 {}
 
-CubeMap::~CubeMap() noexcept
+CubeMap::~CubeMap() noexcept /* override */
 {
 	this->destroy();
 }
@@ -79,75 +77,34 @@ CubeMap::~CubeMap() noexcept
 	return Status::OK;
 }
 
-void CubeMap::render() const noexcept
+/* static */ Status CubeMap::deinit() noexcept
 {
-	DK_ASSERT(s_vao != 0, "CubeMap::init() required before CubeMap::render()");
-
-	GL_CALL(glDepthMask(GL_FALSE));
-	GL_CALL(glBindVertexArray(s_vao));
-	GL_CALL(glActiveTexture(GL_TEXTURE0));
-	GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, m_id));
-	GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 36));
-	GL_CALL(glDepthMask(GL_TRUE));
-}
-
-Status CubeMap::create(const TextureData& right, const TextureData& left, const TextureData& top,
-	const TextureData& bottom, const TextureData& front, const TextureData& back) noexcept
-{
-	GL_CALL(glGenTextures(1, &m_id));
-	GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, m_id));
-
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, Texture::to_gl_fmt(right), right.width(), right.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, right.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, Texture::to_gl_fmt(left), left.width(), left.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, left.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, Texture::to_gl_fmt(top), top.width(), top.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, top.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, Texture::to_gl_fmt(bottom), bottom.width(), bottom.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, bottom.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, Texture::to_gl_fmt(front), front.width(), front.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, front.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, Texture::to_gl_fmt(back), back.width(), back.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, back.data()));
-
-	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
-	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
-	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
+	GL_CALL(glDeleteVertexArrays(1, &s_vao));
+	GL_CALL(glDeleteBuffers(1, &s_vbo));
 	return Status::OK;
 }
 
-Status CubeMap::create(StringView right, StringView left, StringView top,
-		StringView bottom, StringView front, StringView back) noexcept
+void CubeMap::render() const noexcept
 {
-	TextureData right_tex;
-	if (auto ret = sys::ResourceManager::load(right_tex, right); !ret)
-		return ret;
+	DK_ASSERT(s_vao != 0, "CubeMap::init() required before CubeMap::render()");
+	DK_ASSERT(m_tex != nullptr, "Cube map texture does not set");
 
-	TextureData left_tex;
-	if (auto ret = sys::ResourceManager::load(left_tex, left); !ret)
-		return ret;
+	m_tex->enable();
+	GL_CALL(glDepthFunc(GL_LEQUAL));
+	GL_CALL(glBindVertexArray(s_vao));
+	GL_CALL(glDrawArrays(GL_TRIANGLES, 0, 36));
+	GL_CALL(glDepthFunc(GL_LESS));
+}
 
-	TextureData top_tex;
-	if (auto ret = sys::ResourceManager::load(top_tex, top); !ret)
-		return ret;
-
-	TextureData bottom_tex;
-	if (auto ret = sys::ResourceManager::load(bottom_tex, bottom); !ret)
-		return ret;
-
-	TextureData front_tex;
-	if (auto ret = sys::ResourceManager::load(front_tex, front); !ret)
-		return ret;
-
-	TextureData back_tex;
-	if (auto ret = sys::ResourceManager::load(back_tex, back); !ret)
-		return ret;
-
-	return create(right_tex, left_tex, top_tex, bottom_tex, front_tex, back_tex);
+Status CubeMap::create(const CubeMapTexture& tex) noexcept
+{
+	m_tex = &tex;
+	return Status::OK;
 }
 
 void CubeMap::destroy() noexcept
 {
-	if (m_id != 0) {
-		GL_CALL(glDeleteTextures(1, &m_id));
-		m_id = 0;
-	}
+	m_tex = nullptr;
 }
 
 }

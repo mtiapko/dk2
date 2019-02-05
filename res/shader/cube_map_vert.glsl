@@ -12,5 +12,6 @@ void main()
 	vert_uv = attr_vert_pos;
 
 	mat4 view = mat4(mat3(view_mat));
-	gl_Position = vec4(attr_vert_pos, 1.0) * view * proj_mat;
+	vec4 pos = vec4(attr_vert_pos, 1.0) * view * proj_mat;
+	gl_Position = pos.xyww;
 }

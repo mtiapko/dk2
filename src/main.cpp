@@ -34,6 +34,7 @@ private:
 	graph::UniformLocation m_proj_location;
 
 	graph::CubeMap         m_cube_map;
+	graph::CubeMapTexture  m_cube_map_tex;
 	graph::ShaderProgram   m_cube_map_shader;
 	graph::UniformLocation m_cube_map_view_loc;
 	graph::UniformLocation m_cube_map_proj_loc;
@@ -105,7 +106,7 @@ public:
 		if (auto ret = sys::ResourceManager::load(m_stall, "res/model/stall.obj"); !ret)
 			return ret;
 
-		if ((m_sint_2 = sys::ResourceManager::load<audio::Sound>("res/audio/Omnia & IRA - The Fusion.wav")) == nullptr)
+		if ((m_sint_2 = sys::ResourceManager::load<audio::Sound>("res/audio/sint.wav")) == nullptr)
 			return Status::ERROR;
 
 		if (auto ret = sys::ResourceManager::load(m_texture, "res/tex/stallTexture.png"); !ret)
@@ -143,10 +144,10 @@ public:
 		m_cube_map_shader.uniform_location("view_mat", m_cube_map_view_loc);
 		m_cube_map_shader.uniform_location("proj_mat", m_cube_map_proj_loc);
 
-		if (auto ret = graph::CubeMap::init(); !ret)
+		if (auto ret = renderer->init_module<graph::CubeMap>(); !ret)
 			return ret;
 
-		if (auto ret = m_cube_map.create(
+		if (auto ret = m_cube_map_tex.create(
 				"res/skybox/right.jpg",
 				"res/skybox/left.jpg",
 				"res/skybox/top.jpg",
@@ -156,11 +157,14 @@ public:
 		); !ret)
 			return ret;
 
+		if (auto ret = m_cube_map.create(m_cube_map_tex); !ret)
+			return ret;
+
 		audio::Listener::create();
 		m_speaker.set_gain(1.0f);
 		m_speaker.set_pitch(1.0f);
 		m_speaker.set(*m_sint_2);
-		m_speaker.play();
+		//m_speaker.play();
 
 		sys::EventManager<sys::WindowCloseEvent>::get().subscribe(this);
 		sys::Mouse::record_input(true);

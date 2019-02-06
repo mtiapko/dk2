@@ -41,7 +41,7 @@ SIMD_Mat4f::SIMD_Mat4f(float e) noexcept
 	row[0] = _mm_set_ps(0.0f, 0.0f, 0.0f, e);
 	row[1] = _mm_set_ps(0.0f, 0.0f, e,    0.0f);
 	row[2] = _mm_set_ps(0.0f, e,    0.0f, 0.0f);
-	row[3] = _mm_set_ps(1.0f,    0.0f, 0.0f, 0.0f);
+	row[3] = _mm_set_ps(1.0f, 0.0f, 0.0f, 0.0f);
 }
 
 SIMD_Mat4f::SIMD_Mat4f(float e00, float e11, float e22, float e33 /* = 1.0f */) noexcept

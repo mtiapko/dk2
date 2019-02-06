@@ -140,9 +140,10 @@ Status OBJ_Loader::load(graph::ModelData& model_data, StringView file_path) noex
 				}
 				break;
 			case 'f':
-				model_data.indx.reserve(model_data.indx.capacity() + 3);
-				norm_indx.reserve(norm_indx.capacity() + 3);
-				uv_indx.reserve(uv_indx.capacity() + 3);
+				//  TODO: remove. super slow, let it grow exponentially
+				//model_data.indx.reserve(model_data.indx.capacity() + 3);
+				//norm_indx.reserve(norm_indx.capacity() + 3);
+				//uv_indx.reserve(uv_indx.capacity() + 3);
 
 				skip_spaces(++file_data);
 				read(file_data, model_data.indx.emplace_back());
@@ -190,6 +191,7 @@ Status OBJ_Loader::load(graph::ModelData& model_data, StringView file_path) noex
 		return Status::ERROR;
 	}
 
+	DK_LOG_OK("Loaded. Compiling size: ", model_data.indx.size());
 	if (model_data.indx.size() % 3 != 0)
 		DK_LOG_WARNING("");  //  XXX: is this possible? no, is this legal???
 

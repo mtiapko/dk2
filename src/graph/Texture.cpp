@@ -49,7 +49,7 @@ Status Texture::create(const TextureData& data) noexcept
 	GLenum format = to_gl_fmt(data);
 	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 	GL_CALL(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
-	GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, format, data.width(), data.height(), 0, format, GL_UNSIGNED_BYTE, data.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, data.width(), data.height(), 0, format, GL_UNSIGNED_BYTE, data.data()));
 	GL_CALL(glGenerateMipmap(GL_TEXTURE_2D));
 	this->disable();
 

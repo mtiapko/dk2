@@ -32,8 +32,9 @@ private:
 	graph::Camera          m_camera;
 
 	graph::ShaderProgram   m_shader;
-	graph::UniformLocation m_view_loc;
 	graph::UniformLocation m_proj_loc;
+	graph::UniformLocation m_view_loc;
+	graph::UniformLocation m_model_loc;
 
 	graph::CubeMap         m_cube_map;
 	graph::CubeMapTexture  m_cube_map_tex;
@@ -41,7 +42,7 @@ private:
 	graph::UniformLocation m_cube_map_view_loc;
 	graph::UniformLocation m_cube_map_proj_loc;
 
-	float m_val = 0.0f;
+	float m_val = 1.0f;
 
 public:
 	~test_app() noexcept override
@@ -70,19 +71,21 @@ public:
 	{
 		m_wnd->clear();
 		auto view = m_camera.view();
+		auto model = math::Mat4f(m_val);
 
 		m_cube_map_shader.enable();
-		m_shader.set_uniform(m_cube_map_view_loc, view);
+		m_cube_map_shader.set_uniform(m_cube_map_view_loc, view);
 		m_cube_map.render();
 
 		m_shader.enable();
 		m_shader.set_uniform(m_view_loc, view);
+		m_shader.set_uniform(m_model_loc, model);
 		m_texture.enable();
 		m_stall.render();
 
 		/* GUI */
 		ImGui::Begin("Matrix");
-		ImGui::SliderFloat("Rot Y", &m_val, 0.0f, 360.0f);
+		ImGui::SliderFloat("Rot Y", &m_val, 0.01f, 5.0f);
 		ImGui::End();
 
 		graph::GUI::render();
@@ -102,13 +105,13 @@ public:
 		if (auto ret = m_res_mgr.load(m_sint, "res/audio/sint.wav"); !ret)
 			return ret;
 
-		if (auto ret = m_res_mgr.load(m_stall, "res/model/stall.obj"); !ret)
+		if (auto ret = m_res_mgr.load(m_stall, "res/model/lost_empire.obj"); !ret)
 			return ret;
 
 		if ((m_sint_2 = m_res_mgr.load<audio::Sound>("res/audio/sint.wav")) == nullptr)
 			return Status::ERROR;
 
-		if (auto ret = m_res_mgr.load(m_texture, "res/tex/stallTexture.png"); !ret)
+		if (auto ret = m_res_mgr.load(m_texture, "res/tex/lost_empire-RGBA.png"); !ret)
 			return ret;
 
 		/* basic shader */
@@ -126,8 +129,9 @@ public:
 
 		auto proj = math::Mat4f::get_perspective(90.0f, m_wnd->ratio(), 0.1f, 100.0f);
 		m_shader.enable();
-		m_shader.uniform_location("view_mat", m_view_loc);
 		m_shader.uniform_location("proj_mat", m_proj_loc);
+		m_shader.uniform_location("view_mat", m_view_loc);
+		m_shader.uniform_location("model_mat", m_model_loc);
 		m_shader.set_uniform(m_proj_loc, proj);
 
 		/* cube map shader */
@@ -173,6 +177,8 @@ public:
 		sys::EventManager<sys::WindowCloseEvent>::get().subscribe(this);
 		sys::Mouse::record_input(true);
 		sys::Keyboard::record_input(true);
+		glEnable(GL_BLEND);
+		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		return Status::OK;
 	}
 

@@ -22,7 +22,7 @@ namespace std
 {
 	template<> struct hash<dk::util::PerfEntityLocation> {
 		std::size_t operator()(const dk::util::PerfEntityLocation &loc) const {
-			return std::hash<dk::StringView>{}(loc.func);
+			return std::hash<dk::StringView>{}(loc.func) + loc.line;
 		}
 	};
 }

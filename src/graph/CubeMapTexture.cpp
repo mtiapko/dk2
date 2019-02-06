@@ -34,12 +34,12 @@ Status CubeMapTexture::create(const TextureData& right, const TextureData& left,
 	GL_CALL(glGenTextures(1, &m_id));
 	GL_CALL(glBindTexture(GL_TEXTURE_CUBE_MAP, m_id));
 
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, Texture::to_gl_fmt(right), right.width(), right.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, right.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, Texture::to_gl_fmt(left), left.width(), left.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, left.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, Texture::to_gl_fmt(top), top.width(), top.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, top.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, Texture::to_gl_fmt(bottom), bottom.width(), bottom.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, bottom.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, Texture::to_gl_fmt(front), front.width(), front.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, front.data()));
-	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, Texture::to_gl_fmt(back), back.width(), back.height(), 0, GL_RGB, GL_UNSIGNED_BYTE, back.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X, 0, GL_RGBA, right.width(), right.height(), 0, Texture::to_gl_fmt(right), GL_UNSIGNED_BYTE, right.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_X, 0, GL_RGBA, left.width(), left.height(), 0, Texture::to_gl_fmt(left), GL_UNSIGNED_BYTE, left.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Y, 0, GL_RGBA, top.width(), top.height(), 0, Texture::to_gl_fmt(top), GL_UNSIGNED_BYTE, top.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Y, 0, GL_RGBA, bottom.width(), bottom.height(), 0, Texture::to_gl_fmt(bottom), GL_UNSIGNED_BYTE, bottom.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_Z, 0, GL_RGBA, front.width(), front.height(), 0, Texture::to_gl_fmt(front), GL_UNSIGNED_BYTE, front.data()));
+	GL_CALL(glTexImage2D(GL_TEXTURE_CUBE_MAP_NEGATIVE_Z, 0, GL_RGBA, back.width(), back.height(), 0, Texture::to_gl_fmt(back), GL_UNSIGNED_BYTE, back.data()));
 
 	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 	GL_CALL(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));

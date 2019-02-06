@@ -18,6 +18,7 @@ void main()
 
 	mat4 proj = proj_mat;
 	mat4 view = view_mat;
+	mat4 model = model_mat;
 
-	gl_Position = vec4(attr_vert_pos, 1.0) * view * proj;
+	gl_Position = vec4(attr_vert_pos, 1.0) * model * view * proj;
 }

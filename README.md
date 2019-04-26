@@ -2,9 +2,9 @@
 The worst game engine you've ever seen... ;(
 
 ## Demos
-![Minecraft](https://github.com/mtiapko/dk/res/screenshots/mine.png)
+![Minecraft](https://github.com/mtiapko/dk/blob/master/res/screenshots/mine.png)
 
-![House](https://github.com/mtiapko/dk/res/screenshots/house.png)
+![House](https://github.com/mtiapko/dk/blob/master/res/screenshots/house.png)
 
 ## Fonts sources
 - [ProggyVector Regular](https://github.com/bluescan/proggyfonts)

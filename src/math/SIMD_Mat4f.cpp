@@ -1,16 +1,8 @@
 #include <string.h>
-#include "math/SIMD_Mat4f.h"
+#include "dk/math/SIMD_Mat4f.h"
 
 namespace dk::math
 {
-
-SIMD_Mat4f::SIMD_Mat4f(const SIMD_Mat4f& that) noexcept
-{
-	row[0] = that.row[0];
-	row[1] = that.row[1];
-	row[2] = that.row[2];
-	row[3] = that.row[3];
-}
 
 SIMD_Mat4f::SIMD_Mat4f(float data_[]) noexcept
 {
@@ -353,16 +345,6 @@ SIMD_Mat4f& SIMD_Mat4f::operator*=(const SIMD_Mat4f& that) noexcept
 	row[1] = SIMD_Mat4f::mul_row_by_mat(row[1], that);
 	row[2] = SIMD_Mat4f::mul_row_by_mat(row[2], that);
 	row[3] = SIMD_Mat4f::mul_row_by_mat(row[3], that);
-
-	return *this;
-}
-
-SIMD_Mat4f& SIMD_Mat4f::operator=(const SIMD_Mat4f& that) noexcept
-{
-	row[0] = that.row[0];
-	row[1] = that.row[1];
-	row[2] = that.row[2];
-	row[3] = that.row[3];
 
 	return *this;
 }

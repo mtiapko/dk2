@@ -1,14 +1,14 @@
-#include "Log.h"
-#include "sys/Input.h"
-#include "sys/Keyboard.h"
-#include "sys/EventManager.h"
-#include "sys/events/KeyPressEvent.h"
-#include "sys/events/KeyReleaseEvent.h"
-#include "sys/events/MouseMoveEvent.h"
-#include "sys/events/MousePressEvent.h"
-#include "sys/events/MouseReleaseEvent.h"
-#include "sys/events/WindowCloseEvent.h"
-#include "graph/Window.h"
+#include "dk/sys/events/MouseReleaseEvent.h"
+#include "dk/sys/events/WindowCloseEvent.h"
+#include "dk/sys/events/KeyReleaseEvent.h"
+#include "dk/sys/events/MousePressEvent.h"
+#include "dk/sys/events/MouseMoveEvent.h"
+#include "dk/sys/events/KeyPressEvent.h"
+#include "dk/sys/EventManager.h"
+#include "dk/sys/Keyboard.h"
+#include "dk/sys/Input.h"
+#include "dk/os/Descriptor.h"
+#include "dk/Log.h"
 
 #define KEY(x) ((x) + 8)
 
@@ -33,11 +33,27 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	Mouse::set_dx(0);
 	Mouse::set_dy(0);
 
+	// TODO: Oh... rewrite. use only dx and dy
+	Window root_ret, child_ret;
+	int root_x_ret, root_y_ret, win_x_ret, win_y_ret;
+	unsigned mask_ret;
+	auto dpy = os::Descriptor::get();
+	XQueryPointer(dpy, RootWindow(dpy, 0),
+		&root_ret, &child_ret, &root_x_ret, &root_y_ret, &win_x_ret, &win_y_ret, &mask_ret);
+
+	static int mx;
+	static int my;
+
+	//mx += win_x_ret - 1800;
+	//my += win_y_ret - 800;
+	//mouse_move_event_mgr.send(mx, my);
+	//sys::Mouse::set_position(1800, 800);
+
 	XEvent event;
 	int event_count;
-	while ((event_count = XPending(graph::Window::display()))) {
+	while ((event_count = XPending(dpy))) {
 		do {
-			XNextEvent(graph::Window::display(), &event);
+			XNextEvent(dpy, &event);
 			switch (event.type) {
 				case KeyPress:      key_press_event_mgr.send(keyboard_btn_map[event.xkey.keycode]); break;
 				case KeyRelease:    key_release_event_mgr.send(keyboard_btn_map[event.xkey.keycode]); break;
@@ -63,6 +79,8 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(111)] = KeyboardBtn::DELETE;
 	keyboard_btn_map[KEY(14)]  = KeyboardBtn::BACK_SPACE;
 	keyboard_btn_map[KEY(58)]  = KeyboardBtn::CAPS_LOCK;
+	keyboard_btn_map[KEY(102)] = KeyboardBtn::HOME;
+	keyboard_btn_map[KEY(107)] = KeyboardBtn::END;
 	keyboard_btn_map[KEY(104)] = KeyboardBtn::PAGE_UP;
 	keyboard_btn_map[KEY(109)] = KeyboardBtn::PAGE_DOWN;
 	keyboard_btn_map[KEY(103)] = KeyboardBtn::UP_ARROW;
@@ -70,12 +88,39 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(105)] = KeyboardBtn::LEFT_ARROW;
 	keyboard_btn_map[KEY(106)] = KeyboardBtn::RIGHT_ARROW;
 
+	keyboard_btn_map[KEY(12)]  = KeyboardBtn::MINUS;
+	keyboard_btn_map[KEY(13)]  = KeyboardBtn::EQUAL;
+
 	keyboard_btn_map[KEY(42)]  = KeyboardBtn::LEFT_SHIFT;
 	keyboard_btn_map[KEY(54)]  = KeyboardBtn::RIGHT_SHIFT;
 	keyboard_btn_map[KEY(29)]  = KeyboardBtn::LEFT_CTRL;
 	keyboard_btn_map[KEY(97)]  = KeyboardBtn::RIGHT_CTRL;
 	keyboard_btn_map[KEY(56)]  = KeyboardBtn::LEFT_ALT;
 	keyboard_btn_map[KEY(100)] = KeyboardBtn::RIGHT_ALT;
+
+	keyboard_btn_map[KEY(41)] = KeyboardBtn::TILDE;
+	keyboard_btn_map[KEY(26)] = KeyboardBtn::LEFT_BRACKET;
+	keyboard_btn_map[KEY(27)] = KeyboardBtn::RIGHT_BRACKET;
+	keyboard_btn_map[KEY(43)] = KeyboardBtn::BACKSLASH;
+	keyboard_btn_map[KEY(39)] = KeyboardBtn::SEMI_COLON;
+	keyboard_btn_map[KEY(40)] = KeyboardBtn::QUOTE;
+	keyboard_btn_map[KEY(51)] = KeyboardBtn::COMMA;
+	keyboard_btn_map[KEY(52)] = KeyboardBtn::PERIOD;
+	keyboard_btn_map[KEY(53)] = KeyboardBtn::SLASH;
+
+	/* num row */
+	keyboard_btn_map[KEY(59)] = KeyboardBtn::F1;
+	keyboard_btn_map[KEY(60)] = KeyboardBtn::F2;
+	keyboard_btn_map[KEY(61)] = KeyboardBtn::F3;
+	keyboard_btn_map[KEY(62)] = KeyboardBtn::F4;
+	keyboard_btn_map[KEY(63)] = KeyboardBtn::F5;
+	keyboard_btn_map[KEY(64)] = KeyboardBtn::F6;
+	keyboard_btn_map[KEY(65)] = KeyboardBtn::F7;
+	keyboard_btn_map[KEY(66)] = KeyboardBtn::F8;
+	keyboard_btn_map[KEY(67)] = KeyboardBtn::F9;
+	keyboard_btn_map[KEY(68)] = KeyboardBtn::F10;
+	keyboard_btn_map[KEY(69)] = KeyboardBtn::F11;
+	keyboard_btn_map[KEY(70)] = KeyboardBtn::F12;
 
 	/* num row */
 	keyboard_btn_map[KEY(2)] = KeyboardBtn::BTN_1;
@@ -120,9 +165,6 @@ namespace  //  TODO: make this static member and include everything in input.h f
 	keyboard_btn_map[KEY(48)] = KeyboardBtn::B;
 	keyboard_btn_map[KEY(49)] = KeyboardBtn::N;
 	keyboard_btn_map[KEY(50)] = KeyboardBtn::M;
-
-	if (auto ret = Keyboard::create(); !ret)
-		return ret;
 
 	DK_LOG_OK("Input system created");
 	return Status::OK;

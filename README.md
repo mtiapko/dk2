@@ -1,14 +1,19 @@
 # Dvokutnik()
 The worst game engine you've ever seen... ;(
 
+**But!** With node based material editor (very very very pre-alpha version). Don't judge me, I know the [code is ugly](https://github.com/microsoft/calculator).
+
 ## Demos
-![Minecraft](https://github.com/mtiapko/dk/blob/master/res/screenshots/mine.png)
+![material node editor](https://github.com/mtiapko/dk/blob/master/res/screenshot/material-node-editor.png)
 
-![House](https://github.com/mtiapko/dk/blob/master/res/screenshots/house.png)
-
-## Fonts sources
-- [ProggyVector Regular](https://github.com/bluescan/proggyfonts)
+![textured material node editor](https://github.com/mtiapko/dk/blob/master/res/screenshot/textured-material-node-editor.png)
 
 ## Libs
 - [Dear ImGui](https://github.com/ocornut/imgui)
+- [Node Editor in ImGui](https://github.com/thedmd/imgui-node-editor)
+- [ImGuiColorTextEdit](https://github.com/BalazsJako/ImGuiColorTextEdit)
+- [Assimp](https://github.com/assimp/assimp)
 - [SOIL](https://www.lonesock.net/soil.html)
+
+## Used resources (models, fonts etc.)
+Links to all sources are in the [/res](https://github.com/mtiapko/dk/res) directory.

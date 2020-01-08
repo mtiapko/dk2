@@ -1,0 +1,37 @@
+#!/bin/bash
+
+FILE_TMPL=\
+'#ifndef __DKFILE_DEFINE_H__
+#define __DKFILE_DEFINE_H__
+
+namespace dkFILE_NAMESP
+{
+
+
+
+}
+
+#endif // !__DKFILE_DEFINE_H__
+'
+
+FILE_PATH=$1
+if [ -f $FILE_PATH ]; then
+	printf "File '$FILE_PATH' exists. Overwrite? [Y/n]: "
+	read OVERWRITE
+	case $OVERWRITE in
+		[Y]) echo 'Overwriting...';;
+		*)   exit 0
+	esac
+fi
+
+FILE_NAME=$(echo $FILE_PATH | sed 's/^include\/dk//' | sed 's/\.h$//')
+FILE_DEFINE=$(echo "$FILE_NAME" | sed 's/\//_/g' | sed 's/\([a-z]\)\([A-Z]\)/\U\1_\2/g' | sed 's/\([a-z]\)/\U\1/g')
+
+FILE_DIR=$(dirname "$FILE_NAME" | sed 's/\/$//')
+FILE_NAMESP=$(echo "$FILE_DIR" | sed 's/\//::/g' | sed 's/\([A-Z]\)/\L\1/g')
+
+mkdir --parent $(dirname "$FILE_PATH")
+printf '%s' "$FILE_TMPL" \
+	| sed "s/FILE_DEFINE/$FILE_DEFINE/" \
+	| sed "s/FILE_NAMESP/$FILE_NAMESP/" \
+	> "$FILE_PATH"

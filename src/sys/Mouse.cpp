@@ -1,9 +1,10 @@
-#include "sys/events/MouseMoveEvent.h"
-#include "sys/events/MousePressEvent.h"
-#include "sys/events/MouseReleaseEvent.h"
-#include "sys/EventManager.h"
-#include "sys/Mouse.h"
-#include "Assert.h"
+#include "dk/sys/events/MouseMoveEvent.h"
+#include "dk/sys/events/MousePressEvent.h"
+#include "dk/sys/events/MouseReleaseEvent.h"
+#include "dk/sys/EventManager.h"
+#include "dk/sys/Mouse.h"
+#include "dk/os/Descriptor.h"
+#include "dk/Assert.h"
 
 namespace dk::sys
 {
@@ -26,6 +27,13 @@ namespace dk::sys
 	} else {
 		//  TODO: remove
 	}
+}
+
+/* static */ void Mouse::set_position(int x, int y) noexcept
+{
+	static auto dpy = os::Descriptor::get();
+	auto root_window = XRootWindow(dpy, 0);
+	XWarpPointer(dpy, None, root_window, 0, 0, 0, 0, x, y);
 }
 
 void Mouse::handle(const MouseMoveEvent& e) noexcept /* override */

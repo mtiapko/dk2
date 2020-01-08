@@ -1,12 +1,7 @@
-#include "math/Algo.h"
-#include "math/SIMD_Vec4f.h"
+#include "dk/math/SIMD_Vec4f.h"
 
 namespace dk::math
 {
-
-SIMD_Vec4f::SIMD_Vec4f(const SIMD_Vec4f& that) noexcept
-	: row(that.row)
-{}
 
 SIMD_Vec4f::SIMD_Vec4f(float data_[]) noexcept
 	: row(_mm_loadu_ps(data_))

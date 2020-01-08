@@ -16,4 +16,4 @@ The worst game engine you've ever seen... ;(
 - [SOIL](https://www.lonesock.net/soil.html)
 
 ## Used resources (models, fonts etc.)
-Links to all sources are in the [/res](https://github.com/mtiapko/dk/res) directory.
+Links to all sources are in the [/res](https://github.com/mtiapko/dk/tree/master/res) directory.

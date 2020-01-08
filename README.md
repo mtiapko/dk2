@@ -1,4 +1,4 @@
-# Dvokutnik()
+# Dvokutnyk()
 The worst game engine you've ever seen... ;(
 
 **But!** With node based material editor (very very very pre-alpha version). Don't judge me, I know the [code is ugly](https://github.com/microsoft/calculator).

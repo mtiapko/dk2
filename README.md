@@ -4,9 +4,9 @@ The worst game engine you've ever seen... ;(
 **But!** With node based material editor (very very very pre-alpha version). Don't judge me, I know the [code is ugly](https://github.com/microsoft/calculator).
 
 ## Demos
-![material node editor](https://github.com/mtiapko/dk/blob/master/res/screenshot/material-node-editor.png)
+![material node editor](https://github.com/mtiapko/dk2/blob/master/res/screenshot/material-node-editor.png)
 
-![textured material node editor](https://github.com/mtiapko/dk/blob/master/res/screenshot/textured-material-node-editor.png)
+![textured material node editor](https://github.com/mtiapko/dk2/blob/master/res/screenshot/textured-material-node-editor.png)
 
 ## Libs
 - [Dear ImGui](https://github.com/ocornut/imgui)
@@ -16,4 +16,4 @@ The worst game engine you've ever seen... ;(
 - [SOIL](https://www.lonesock.net/soil.html)
 
 ## Used resources (models, fonts etc.)
-Links to all sources are in the [/res](https://github.com/mtiapko/dk/tree/master/res) directory.
+Links to all sources are in the [/res](https://github.com/mtiapko/dk2/tree/master/res) directory.
